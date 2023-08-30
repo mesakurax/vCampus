@@ -76,8 +76,9 @@ public class ClientThread extends Thread implements MessageTypes{
 						e.printStackTrace();
 					}
 					break;
-
-
+				case 2:
+					StudentRoll(cmd);
+					break;
 				//银行模块
 				case 7:
 					bank(cmd);
@@ -124,7 +125,121 @@ public class ClientThread extends Thread implements MessageTypes{
 	 * @param cmd 接受的消息
 	 */
 
+	private void StudentRoll(int cmd) {
 
+		StudentRollController stuCrl = new StudentRollController();
+		StudentRoll stu=new StudentRoll();
+		try {
+			stu=(StudentRoll) ois.readObject();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		//根据不同消息，进行不同操作
+		switch (cmd) {
+			//按学号查询学生学籍信息
+			case 201: {
+				try {
+
+					StudentRoll result = stuCrl.query_ID(stu);
+					//System.out.println(result.getsId());
+					if (result != null) {
+						oos.writeInt(2011);
+						oos.flush();
+						oos.writeObject(result);
+						oos.flush();
+					} else {
+						oos.writeInt(2012);
+						oos.flush();
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				break;
+			}
+			//添加学生信息
+			case 202: {
+				try {
+					int wb = (stuCrl.addInfo(stu)) ? STUDENTROLL_ADD_SUCCESS : STUDENTROLL_ADD_FAIL;
+					oos.writeInt(wb);
+
+					oos.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				break;
+			}
+			//删除学生信息
+			case 203:
+				try {
+					int wb = (stuCrl.deleteInfo(stu) ? STUDENTROLL_DELETE_SUCCESS : STUDENTROLL_DELETE_FAIL);
+					oos.writeInt(wb);
+
+					oos.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				break;
+
+			//修改学生信息
+			case 204:{
+				try {
+					int wb = (stuCrl.modifyInfo(stu)) ? STUDENTROLL_MODIFY_SUCCESS : STUDENTROLL_MODIFY_FAIL;
+					oos.writeInt(wb);
+
+					oos.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				break;
+			}
+
+			//按姓名查学生信息
+			case 205: {
+				try {
+
+					StudentRoll result = stuCrl.query_Name(stu);
+					//System.out.println(result.getsName());
+					if (result != null) {
+						oos.writeInt(2051);
+						oos.flush();
+						oos.writeObject(result);
+						oos.flush();
+					} else {
+						oos.writeInt(2052);
+						oos.flush();
+					}
+
+				} catch (Exception e){
+					e.printStackTrace();
+				}
+
+				break;
+			}
+
+			//学籍信息查询（管理员查询）
+			case 206:
+				try {
+					Vector<StudentRoll> result = stuCrl.queryAll();
+
+					if (result != null) {
+						System.out.println(result.size());//输出学生信息条目数
+						oos.writeInt(STUDENTROLL_INFO_QUERY_ALL_SUCCESS);
+						oos.writeObject(result);
+					} else {
+						oos.writeInt(STUDENTROLL_INFO_QUERY_ALL_FAIL);
+					}
+
+					oos.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}
+	}
 
 
 	/**
@@ -154,13 +269,14 @@ public class ClientThread extends Thread implements MessageTypes{
 		try{
 			info=(rechargeRecord) ois.readObject();
 		}
-		catch (Exception e) {
+		catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}
 
 		switch (cmd){
 			case 701:
 				try {
+					System.out.println("服务器接收到信号");
 					int writeBack = model.addRecord(info)?7011:7012;
 					System.out.println(writeBack);
 					oos.writeInt(writeBack);
@@ -168,132 +284,8 @@ public class ClientThread extends Thread implements MessageTypes{
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+
 				break;
-
-			case 702:
-				try {
-					rechargeRecord[] result = model.queryRecord(info,1);
-
-					if (result != null) {
-						System.out.println(7021);
-						oos.writeInt(7021);
-						oos.flush();
-						oos.writeObject(result);
-						oos.flush();
-					} else {
-						System.out.println(7022);
-						oos.writeInt(7022);
-						oos.flush();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				break;
-
-			case 703:
-				try {
-					rechargeRecord[] result = model.queryRecord(info,2);
-
-					if (result != null) {
-						System.out.println(7031);
-						oos.writeInt(7031);
-						oos.flush();
-						oos.writeObject(result);
-						oos.flush();
-					} else {
-						System.out.println(7032);
-						oos.writeInt(7032);
-						oos.flush();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				break;
-
-			case 704:
-				try {
-					rechargeRecord[] result = model.queryRecord(info,3);
-
-					if (result != null) {
-						System.out.println(7041);
-						oos.writeInt(7041);
-						oos.flush();
-						oos.writeObject(result);
-						oos.flush();
-					} else {
-						System.out.println(7042);
-						oos.writeInt(7042);
-						oos.flush();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				break;
-
-			case 705:
-				try {
-					int writeBack = model.accept(info)?7051:7052;
-					System.out.println(writeBack);
-					oos.writeInt(writeBack);
-					oos.flush();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				break;
-
-			case 706:
-				try {
-					int writeBack = model.refuse(info)?7061:7062;
-					System.out.println(writeBack);
-					oos.writeInt(writeBack);
-					oos.flush();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				break;
-
-			case 707:
-				try {
-					rechargeRecord[] result = model.queryRecord(info,4);
-
-					if (result != null) {
-						System.out.println(7071);
-						oos.writeInt(7071);
-						oos.flush();
-						oos.writeObject(result);
-						oos.flush();
-					} else {
-						System.out.println(7072);
-						oos.writeInt(7072);
-						oos.flush();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				break;
-
-			case 708:
-				try {
-					rechargeRecord[] result = model.queryRecord(info,5);
-
-					if (result != null) {
-						System.out.println(7081);
-						oos.writeInt(7081);
-						oos.flush();
-						oos.writeObject(result);
-						oos.flush();
-					} else {
-						System.out.println(7082);
-						oos.writeInt(7082);
-						oos.flush();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				break;
-
-
-
 		}
 
 
