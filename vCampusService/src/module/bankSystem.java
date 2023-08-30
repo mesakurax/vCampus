@@ -23,8 +23,8 @@ public class bankSystem {
     public rechargeRecord[] queryRecord(rechargeRecord info, int flag) {
         try {
             ResultSet rs = (ResultSet) model.query(info, flag);
-            List<rechargeRecord> records = new ArrayList<>();
 
+            List<rechargeRecord> records = new ArrayList<>();
             while (rs.next()) {
                 rechargeRecord temp = new rechargeRecord(
                         rs.getInt("rId"),
@@ -37,16 +37,13 @@ public class bankSystem {
                 );
                 records.add(temp);
             }
-            if (records.isEmpty())
-                return null;
-            else
-                return records.toArray(new rechargeRecord[records.size()]);
+            return records.toArray(new rechargeRecord[records.size()]);
 
-        } catch (SQLException e) {
-            System.out.println("Database exception");
+        } catch (Exception e) {
             e.printStackTrace();
-            return null;
         }
+        System.out.println("Database exception");
+        return null;
     }
 
     //同意充值记录
@@ -70,16 +67,16 @@ public class bankSystem {
 
 
     public static void main(String[] args) {
-        rechargeRecord temp = new rechargeRecord(8686, "59955", "1", 50, 9, "55", "u或");
+        rechargeRecord temp = new rechargeRecord(8686, "555", "1", 50, 9, "55", "u或");
         rechargeRecordModel model = new rechargeRecordModel();
         bankSystem p = new bankSystem();
-        if (p.accept(temp))
+  /*      if (p.accept(temp))
             System.out.println("yes");
         else
-            System.out.println("null");
-    }
-}
- /*       rechargeRecord[] rs=(rechargeRecord[]) p.queryRecord(temp,5);
+            System.out.println("null");*/
+
+
+       rechargeRecord[] rs=(rechargeRecord[]) p.queryRecord(temp,5);
         if(rs==null)
             System.out.println("null");
         else
@@ -90,4 +87,3 @@ public class bankSystem {
     }
 }
 
-*/
