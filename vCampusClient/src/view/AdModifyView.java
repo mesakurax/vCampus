@@ -1,8 +1,7 @@
 package view;
 
-import entity.MessageTypes;
 import entity.StudentRoll;
-import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
+import module.StudentData;
 import utils.SocketHelper;
 
 import javax.swing.*;
@@ -58,20 +57,14 @@ public class AdModifyView extends JFrame {
             s.setsDepart(sDepart);
             s.setsProfession(sProfession);
             s.setsSex(sSex);
-            int cmd = 0;
-            int opt = (optType == "modify" ? MessageTypes.STUDENTROLL_MODIFY : MessageTypes.STUDENTROLL_ADD);
-            int success = (optType == "modify" ? MessageTypes.STUDENTROLL_MODIFY_SUCCESS : MessageTypes.STUDENTROLL_ADD_SUCCESS);
-            try {
-                socketHelper.getOs().writeInt(opt);
-                socketHelper.getOs().flush();
-                socketHelper.getOs().writeObject(s);
-                socketHelper.getOs().flush();
-                cmd = socketHelper.getIs().readInt();
-
-            } catch (Exception erro) {
-                erro.printStackTrace();
+            boolean success = false;
+            if(optType.equals("modify")){
+                success = new StudentData(socketHelper).Modify(s);
             }
-            if (cmd == success) {
+            else{
+                success = new StudentData(socketHelper).Add(s);
+            }
+            if (success) {
                 JOptionPane.showMessageDialog(null, "±£´æ³É¹¦£¡");
                 this.dispose();
                 p.refreshTable();

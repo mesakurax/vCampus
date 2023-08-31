@@ -46,6 +46,7 @@ public class SeverRun extends JFrame {
             serverThread.close();
             JOptionPane.showMessageDialog(this, "服务器已关闭");
             this.dispose();
+            System.exit(0);
         }
         else{
             System.out.println("服务器空");
