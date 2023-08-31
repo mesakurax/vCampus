@@ -286,6 +286,131 @@ public class ClientThread extends Thread implements MessageTypes {
                 }
 
                 break;
+
+            case 702:
+                try {
+                    rechargeRecord[] result = model.queryRecord(info,1);
+
+                    if (result != null) {
+                        System.out.println(7021);
+                        oos.writeInt(7021);
+                        oos.flush();
+                        oos.writeObject(result);
+                        oos.flush();
+                    } else {
+                        System.out.println(7022);
+                        oos.writeInt(7022);
+                        oos.flush();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+
+            case 703:
+                try {
+                    rechargeRecord[] result = model.queryRecord(info,2);
+
+                    if (result != null) {
+                        System.out.println(7031);
+                        oos.writeInt(7031);
+                        oos.flush();
+                        oos.writeObject(result);
+                        oos.flush();
+                    } else {
+                        System.out.println(7032);
+                        oos.writeInt(7032);
+                        oos.flush();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+
+            case 704:
+                try {
+                    rechargeRecord[] result = model.queryRecord(info,3);
+
+                    if (result != null) {
+                        System.out.println(7041);
+                        oos.writeInt(7041);
+                        oos.flush();
+                        oos.writeObject(result);
+                        oos.flush();
+                    } else {
+                        System.out.println(7042);
+                        oos.writeInt(7042);
+                        oos.flush();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+
+            case 705:
+                try {
+                    int writeBack = model.accept(info)?7051:7052;
+                    System.out.println(writeBack);
+                    oos.writeInt(writeBack);
+                    oos.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+
+            case 706:
+                try {
+                    int writeBack = model.refuse(info)?7061:7062;
+                    System.out.println(writeBack);
+                    oos.writeInt(writeBack);
+                    oos.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+
+            case 707:
+                try {
+                    rechargeRecord[] result = model.queryRecord(info,4);
+
+                    if (result != null) {
+                        System.out.println(7071);
+                        oos.writeInt(7071);
+                        oos.flush();
+                        oos.writeObject(result);
+                        oos.flush();
+                    } else {
+                        System.out.println(7072);
+                        oos.writeInt(7072);
+                        oos.flush();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+
+            case 708:
+                try {
+                    rechargeRecord[] result = model.queryRecord(info,5);
+
+                    if (result != null) {
+                        System.out.println(7081);
+                        oos.writeInt(7081);
+                        oos.flush();
+                        oos.writeObject(result);
+                        oos.flush();
+                    } else {
+                        System.out.println(7082);
+                        oos.writeInt(7082);
+                        oos.flush();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+
+
+
         }
 
 
