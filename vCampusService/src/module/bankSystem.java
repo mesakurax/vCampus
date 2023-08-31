@@ -37,12 +37,9 @@ public class bankSystem {
                 );
                 records.add(temp);
             }
-            if (records.isEmpty())
-                return null;
-            else
                 return records.toArray(new rechargeRecord[records.size()]);
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.out.println("Database exception");
             e.printStackTrace();
             return null;
