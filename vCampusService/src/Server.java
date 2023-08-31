@@ -1,4 +1,3 @@
-import net.ServerThread;
 import net.SeverRun;
 
 public class Server extends Throwable{
