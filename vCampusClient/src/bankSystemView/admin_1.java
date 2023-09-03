@@ -395,6 +395,7 @@ public class admin_1 extends JPanel {
                     JFrame frame = new JFrame();
                     SocketHelper socketHelper=new SocketHelper();
                     socketHelper.getConnection(socketHelper.ip,socketHelper.port);
+                    socketHelper.getOs().writeInt(1);
                     admin_1 stuAdmin = new admin_1(socketHelper);
 
                     frame.setLayout(new BorderLayout()); // 设置布局管理器为BorderLayout

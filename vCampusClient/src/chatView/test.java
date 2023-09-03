@@ -31,9 +31,9 @@ class client {
 
     public void run() {
         try {
+            User t = new User();
             JFrame frame = new JFrame();
 
-            User t = new User();
             t.setName(Timehelp.getCurrentTime());
             chatView stuAdmin = new chatView(t);
 
