@@ -150,6 +150,11 @@ public class userBankView extends JPanel {
         }
     }
 
+    private void refreshMouseClicked() {
+        // TODO add your code here
+        refreshTable();
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         pamel2 = new JPanel();

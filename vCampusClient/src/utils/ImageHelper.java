@@ -6,13 +6,6 @@ import javax.swing.ImageIcon;
 
 public class ImageHelper {
 
-    public static ImageIcon resizeImage(String imagePath, int maxWidth, int maxHeight) {
-        ImageIcon imageIcon = new ImageIcon(imagePath);
-        Image originalImage = imageIcon.getImage();
-
-        return resizeImage(originalImage, maxWidth, maxHeight);
-    }
-
     public static ImageIcon resizeImage(Image image, int maxWidth, int maxHeight) {
         int originalWidth = image.getWidth(null);
         int originalHeight = image.getHeight(null);

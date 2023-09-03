@@ -126,7 +126,7 @@ public class ClientThread extends Thread implements MessageTypes {
                                 try {
                                     System.out.println("消息发送给"+correctid);
                                     System.out.println(mes);
-                                    currentServer.mess.get(times).oos.writeInt(0021);
+                                    currentServer.mess.get(times).oos.writeInt(0011);
                                     currentServer.mess.get(times).oos.flush();
                                     currentServer.mess.get(times).oos.writeObject(mes);
                                     currentServer.mess.get(times).oos.flush();

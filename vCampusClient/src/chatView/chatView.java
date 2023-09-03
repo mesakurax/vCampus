@@ -270,25 +270,11 @@ public class chatView extends JPanel{
                     message.getOs().writeObject(mes);
                     message.getOs().flush();
 
-                    BufferedInputStream bis = new BufferedInputStream(new FileInputStream(imagePath));
-                    int readLen = 0;
-                    byte[] buf = new byte[1024];
-                    while( (readLen = bis.read(buf)) != -1 ) {
-                        message.getOs().write(buf,0,readLen);
-                    }
-                    message.getOs().flush();
-                    bis.close();
-
-                    String stopMessage = "STOP";
-                    byte[] stopData = stopMessage.getBytes();
-                    message.getOs().write(stopData);
-                    message.getOs().flush();
-
-
-                    Icon icon=ImageHelper.resizeImage(imagePath,500,500);
+                    BufferedImage image = ImageIO.read(new File(imagePath));
+                    ImageIcon icon = ImageHelper.resizeImage(image, 700, 600);
 
                     StyledDocument doc = textPane1.getStyledDocument();
-                    // 获取文档
+
                     textPane1.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
                     doc.insertString(doc.getLength(), "\n", null);
                     doc.insertString(doc.getLength(), "\n", null);
@@ -296,6 +282,23 @@ public class chatView extends JPanel{
                     doc.insertString(doc.getLength(), " ", null);
                     textPane1.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
                     textPane1.insertIcon(icon);
+
+                    FileInputStream fis=new FileInputStream(imagePath);
+                    BufferedInputStream bis = new BufferedInputStream(fis);
+                    int readLen = 0;
+                    byte[] buf = new byte[1024];
+                    while( (readLen = bis.read(buf)) != -1 ) {
+                        message.getOs().write(buf,0,readLen);
+                    }
+                    message.getOs().flush();
+                    bis.close();
+                    fis.close();
+
+                    String stopMessage = "STOP";
+                    byte[] stopData = stopMessage.getBytes();
+                    message.getOs().write(stopData);
+                    message.getOs().flush();
+
                 }
                 catch (Exception e)
                 {
@@ -319,19 +322,18 @@ public class chatView extends JPanel{
         int offset = textPane1.viewToModel(e.getPoint());
 
         StyledDocument doc = textPane1.getStyledDocument();
-        // 获取点击位置的元素
+// 获取点击位置的元素
         Element element = doc.getCharacterElement(offset);
 
-        // 检查是否是图像元素
+// 检查是否是图像元素
         if (element.getAttributes().getAttribute(StyleConstants.IconAttribute) != null) {
-
             Icon icon = (Icon) element.getAttributes().getAttribute(StyleConstants.IconAttribute);
-
 
             // 创建一个弹出窗口
             JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(textPane1);
 
             try {
+                // 创建临时文件
                 // 获取系统默认的图片查看器
                 Desktop desktop = Desktop.getDesktop();
 
@@ -353,13 +355,14 @@ public class chatView extends JPanel{
     }
 
 
+
     class Message_L implements Runnable {
         @Override
         public void run() {
             try {
                 while (true) {
                     int cmd=message.getIs().readInt();
-                    if (cmd == 0011) {
+                    if (cmd == 0011 ) {
                         String mes = (String) message.getIs().readObject();
                         System.out.println(mes);
                         StyledDocument doc = textPane1.getStyledDocument();
@@ -368,16 +371,6 @@ public class chatView extends JPanel{
                         doc.insertString(doc.getLength(), "\n", null);
                         doc.insertString(doc.getLength(), mes, null);
 
-                    }
-                    else if (cmd == 0021)
-                    {
-                        String mes = (String) message.getIs().readObject();
-                        System.out.println(mes);
-                        StyledDocument doc = textPane1.getStyledDocument();
-                        textPane1.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
-                        doc.insertString(doc.getLength(), "\n", null);
-                        doc.insertString(doc.getLength(), "\n", null);
-                        doc.insertString(doc.getLength(), mes, null);
                     }
                     else if(cmd==0031)
                     {
@@ -396,20 +389,18 @@ public class chatView extends JPanel{
                                 break;
                             }
                         }
-
                         byte[] imageData = outputStream.toByteArray();
 
 
-                        // 将字节数组转换为图像
                         ByteArrayInputStream inputStream = new ByteArrayInputStream(imageData);
-                        Image image = ImageIO.read(inputStream);
+                        BufferedImage image = ImageIO.read(inputStream);
                         inputStream.close();
 
 
-                        Icon icon=ImageHelper.resizeImage(image,500,500);
+                        ImageIcon icon = ImageHelper.resizeImage(image, 700, 600);
 
                         StyledDocument doc = textPane1.getStyledDocument();
-                        // 获取文档
+
                         textPane1.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
                         doc.insertString(doc.getLength(), "\n", null);
                         doc.insertString(doc.getLength(), "\n", null);
@@ -421,43 +412,6 @@ public class chatView extends JPanel{
 
                     }
 
-                    else if(cmd==0041)
-                    {
-                        String mes = (String) message.getIs().readObject();
-                        System.out.println(mes);
-
-                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-                        byte[] buffer = new byte[1024];
-                        int bytesRead;
-
-                        while ((bytesRead = message.getIs().read(buffer)) != -1) {
-                            outputStream.write(buffer, 0, bytesRead);
-
-                            if (new String(buffer, 0, bytesRead).equals("STOP")) {
-                                break;
-                            }
-                        }
-
-                        byte[] imageData = outputStream.toByteArray();
-
-                        // 将字节数组转换为图像
-                        ByteArrayInputStream inputStream = new ByteArrayInputStream(imageData);
-                        Image image = ImageIO.read(inputStream);
-                        inputStream.close();
-
-                        Icon icon=ImageHelper.resizeImage(image,500,500);
-
-                        StyledDocument doc = textPane1.getStyledDocument();
-                        // 获取文档
-                        textPane1.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
-                        doc.insertString(doc.getLength(), "\n", null);
-                        doc.insertString(doc.getLength(), "\n", null);
-                        doc.insertString(doc.getLength(), mes, null);
-                        doc.insertString(doc.getLength(), " ", null);
-                        textPane1.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
-                        textPane1.insertIcon(icon);
-                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

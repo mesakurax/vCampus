@@ -56,7 +56,7 @@ public class ServerThread extends Thread {
                 else
                 {
                     clients.add(current);
-                    System.out.println("现在有"+mess.size()+"个客户端连接服务器\n");
+                    System.out.println("现在有"+clients.size()+"个客户端连接服务器\n");
                 }
                 current.start();
             } catch (IOException e) {
