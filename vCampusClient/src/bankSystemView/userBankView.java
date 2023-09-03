@@ -393,6 +393,8 @@ public class userBankView extends JPanel {
                     JFrame frame = new JFrame();
                     SocketHelper socketHelper=new SocketHelper();
                     socketHelper.getConnection(socketHelper.ip,socketHelper.port);
+                    socketHelper.getOs().writeInt(1);
+                    socketHelper.getOs().flush();
                     userBankView stuAdmin = new userBankView(socketHelper,"555");
 
                     frame.setLayout(new BorderLayout()); // 设置布局管理器为BorderLayout

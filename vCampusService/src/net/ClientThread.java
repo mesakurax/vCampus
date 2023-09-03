@@ -109,8 +109,8 @@ public class ClientThread extends Thread implements MessageTypes {
                                 }
 
                         }
-                    else if(cmd==002)
-                    {
+
+                    else if(cmd==002) {
                         String mes = "";
                         String id = "";
                         try {
@@ -180,6 +180,61 @@ public class ClientThread extends Thread implements MessageTypes {
                             }
 
 
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
+                        }
+                    }
+
+                    else if(cmd==004) {
+                        try {
+
+                            String mes = "";
+                            String id = "";
+                            id = (String) ois.readObject();
+                            mes=(String) ois.readObject();
+
+                            String correctid="&&"+id;
+
+                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+                            byte[] buffer = new byte[1024];
+                            int bytesRead;
+
+                            while ((bytesRead = ois.read(buffer)) != -1) {
+                                outputStream.write(buffer, 0, bytesRead);
+
+                                if (new String(buffer, 0, bytesRead).equals("STOP")) {
+                                    break;
+                                }
+                            }
+
+                            byte[] imageData = outputStream.toByteArray();
+                            outputStream.close();
+
+                            for (int times = 0; times < currentServer.mess.size(); times++)
+                            {
+                                if(currentServer.mess.get(times).curUser.equals(correctid)) {
+                                    try {
+
+                                        currentServer.mess.get(times).oos.writeInt(0031);
+                                        currentServer.mess.get(times).oos.flush();
+                                        currentServer.mess.get(times).oos.writeObject(mes);
+                                        currentServer.mess.get(times).oos.flush();
+                                        currentServer.mess.get(times).oos.write(imageData);
+                                        currentServer.mess.get(times).oos.flush();
+
+
+                                        String stopMessage = "STOP";
+                                        byte[] stopData = stopMessage.getBytes();
+                                        currentServer.mess.get(times).oos.write(stopData);
+                                        currentServer.mess.get(times).oos.flush();
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
 
