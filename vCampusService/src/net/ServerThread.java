@@ -15,8 +15,13 @@ public class ServerThread extends Thread {
 
     private Vector<ClientThread> clients=new Vector<ClientThread>(); //已连接的客户端线程向量
 
+    public Vector<ClientThread> mess=new Vector<ClientThread>(); //已连接的客户端线程向量
+
     public SeverRun severRun;
 
+    public ServerSocket getServer() {
+        return server;
+    }
 
     public ServerThread(SeverRun severRun) {
 
@@ -43,8 +48,17 @@ public class ServerThread extends Thread {
             try {
                 Socket client = server.accept();  //监听新的客户端
                 ClientThread current = new ClientThread(client, this);
+                if(current.getOis().readInt()==0)
+                {
+                    mess.add(current);
+                    System.out.println("现在有"+mess.size()+"个消息客户端连接服务器\n");
+                }
+                else
+                {
+                    clients.add(current);
+                    System.out.println("现在有"+mess.size()+"个客户端连接服务器\n");
+                }
                 current.start();
-                clients.add(current);
             } catch (IOException e) {
                 e.printStackTrace();
             }

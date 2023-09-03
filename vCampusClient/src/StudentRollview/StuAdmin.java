@@ -1,4 +1,4 @@
-package view;
+package StudentRollview;
 
 import module.StudentData;
 import entity.StudentRoll;
