@@ -1,8 +1,8 @@
 package entity;
 
 public interface MessageTypes {
-    //瀛︾敓瀛︾睄妯″潡(2)
-    //瀛︾睄淇℃伅鎿嶄綔妯″潡(20)
+    //学生学籍模块(2)
+    //学籍信息操作模块(20)
     public static final int STUDENTROLL_INFO_QUERY_ID = 201;
     public static final int STUDENTROLL_INFO_QUERY_ID_SUCCESS = 2011;
     public static final int STUDENTROLL_INFO_QUERY_ID_FAIL = 2012;
@@ -27,7 +27,7 @@ public interface MessageTypes {
     public static final int STUDENTROLL_INFO_QUERY_ALL_SUCCESS = 2061;
     public static final int STUDENTROLL_INFO_QUERY_ALL_FAIL = 2062;
 
-    //瀛︾睄淇℃伅鍝嶅簲妯″潡(21)
+    //学籍信息响应模块(21)
     public static final int STUDENT_STATUS_INFORMATION = 211;
     public static final int STUDENT_STATUS_INFORMATION_SUCCESS = 211;
     public static final int STUDENT_STATUS_INFORMATION_FAIL = 212;

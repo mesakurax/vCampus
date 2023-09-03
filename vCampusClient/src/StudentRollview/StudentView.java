@@ -1,4 +1,4 @@
-package view;
+package StudentRollview;
 
 import entity.StudentRoll;
 import entity.User;
@@ -36,7 +36,7 @@ public class StudentView extends JPanel {
                     //	//
                     skhp.getConnection(skhp.ip ,skhp.port);
                     User uu = new User();
-                    uu.setId("09021102");
+                    uu.setId("1");
                     JFrame frame = new JFrame();
                     frame.add(new StudentView(uu, skhp));
                     frame.pack();

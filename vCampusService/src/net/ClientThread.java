@@ -4,6 +4,9 @@ import entity.*;
 import module.*;
 
 
+import javax.swing.*;
+import java.awt.*;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -31,6 +34,11 @@ public class ClientThread extends Thread implements MessageTypes {
      * 对象输出流
      */
     private ObjectOutputStream oos;
+
+    public ObjectInputStream getOis() {
+        return ois;
+    }
+
     /**
      * 当前登录用户
      */
@@ -76,6 +84,110 @@ public class ClientThread extends Thread implements MessageTypes {
                         e.printStackTrace();
                     }
                     break;
+
+                //聊天室处理
+                case 0:
+                    if(cmd==001) {
+                        String mes = "";
+
+                        try {
+                            mes = (String) ois.readObject();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println("消息会发给的人数为" + currentServer.mess.size());
+                        for (int times = 0; times < currentServer.mess.size(); times++) {
+                                try {
+                                        System.out.println(mes);
+                                        currentServer.mess.get(times).oos.writeInt(0011);
+                                        currentServer.mess.get(times).oos.flush();
+                                        currentServer.mess.get(times).oos.writeObject(mes);
+                                        currentServer.mess.get(times).oos.flush();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                        }
+                    else if(cmd==002)
+                    {
+                        String mes = "";
+                        String id = "";
+                        try {
+                            id = (String) ois.readObject();
+                            mes=(String) ois.readObject();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        String correctid="&&"+id;
+
+                        for(int times=0;times<currentServer.mess.size();times++){
+                            if(currentServer.mess.get(times).curUser.equals(correctid)){
+                                try {
+                                    System.out.println("消息发送给"+correctid);
+                                    System.out.println(mes);
+                                    currentServer.mess.get(times).oos.writeInt(0021);
+                                    currentServer.mess.get(times).oos.flush();
+                                    currentServer.mess.get(times).oos.writeObject(mes);
+                                    currentServer.mess.get(times).oos.flush();
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+
+                    else if(cmd==003) {
+                        try {
+
+                            String mes = (String) ois.readObject();
+
+                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+                            byte[] buffer = new byte[1024];
+                            int bytesRead;
+
+                            while ((bytesRead = ois.read(buffer)) != -1) {
+                                outputStream.write(buffer, 0, bytesRead);
+
+                                if (new String(buffer, 0, bytesRead).equals("STOP")) {
+                                    break;
+                                }
+                            }
+
+                            byte[] imageData = outputStream.toByteArray();
+                            outputStream.close();
+
+                            for (int times = 0; times < currentServer.mess.size(); times++) {
+                                try {
+
+                                    currentServer.mess.get(times).oos.writeInt(0031);
+                                    currentServer.mess.get(times).oos.flush();
+                                    currentServer.mess.get(times).oos.writeObject(mes);
+                                    currentServer.mess.get(times).oos.flush();
+                                    currentServer.mess.get(times).oos.write(imageData);
+                                    currentServer.mess.get(times).oos.flush();
+
+
+                                    String stopMessage = "STOP";
+                                    byte[] stopData = stopMessage.getBytes();
+                                    currentServer.mess.get(times).oos.write(stopData);
+                                    currentServer.mess.get(times).oos.flush();
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
+                        }
+                    }
+                        break;
+
+
                 //学籍模块
                 case 2:
                     StudentRoll(cmd);
