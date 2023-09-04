@@ -87,161 +87,8 @@ public class ClientThread extends Thread implements MessageTypes {
 
                 //聊天室处理
                 case 0:
-                    if(cmd==001) {
-                        String mes = "";
-
-                        try {
-                            mes = (String) ois.readObject();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        System.out.println("消息会发给的人数为" + currentServer.mess.size());
-                        for (int times = 0; times < currentServer.mess.size(); times++) {
-                                try {
-                                        System.out.println(mes);
-                                        currentServer.mess.get(times).oos.writeInt(0011);
-                                        currentServer.mess.get(times).oos.flush();
-                                        currentServer.mess.get(times).oos.writeObject(mes);
-                                        currentServer.mess.get(times).oos.flush();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-
-                        }
-
-                    else if(cmd==002) {
-                        String mes = "";
-                        String id = "";
-                        try {
-                            id = (String) ois.readObject();
-                            mes=(String) ois.readObject();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        String correctid="&&"+id;
-
-                        for(int times=0;times<currentServer.mess.size();times++){
-                            if(currentServer.mess.get(times).curUser.equals(correctid)){
-                                try {
-                                    System.out.println("消息发送给"+correctid);
-                                    System.out.println(mes);
-                                    currentServer.mess.get(times).oos.writeInt(0011);
-                                    currentServer.mess.get(times).oos.flush();
-                                    currentServer.mess.get(times).oos.writeObject(mes);
-                                    currentServer.mess.get(times).oos.flush();
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }
-
-                    else if(cmd==003) {
-                        try {
-
-                            String mes = (String) ois.readObject();
-
-                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-                            byte[] buffer = new byte[1024];
-                            int bytesRead;
-
-                            while ((bytesRead = ois.read(buffer)) != -1) {
-                                outputStream.write(buffer, 0, bytesRead);
-
-                                if (new String(buffer, 0, bytesRead).equals("STOP")) {
-                                    break;
-                                }
-                            }
-
-                            byte[] imageData = outputStream.toByteArray();
-                            outputStream.close();
-
-                            for (int times = 0; times < currentServer.mess.size(); times++) {
-                                try {
-
-                                    currentServer.mess.get(times).oos.writeInt(0031);
-                                    currentServer.mess.get(times).oos.flush();
-                                    currentServer.mess.get(times).oos.writeObject(mes);
-                                    currentServer.mess.get(times).oos.flush();
-                                    currentServer.mess.get(times).oos.write(imageData);
-                                    currentServer.mess.get(times).oos.flush();
-
-
-                                    String stopMessage = "STOP";
-                                    byte[] stopData = stopMessage.getBytes();
-                                    currentServer.mess.get(times).oos.write(stopData);
-                                    currentServer.mess.get(times).oos.flush();
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-
-                        }
-                    }
-
-                    else if(cmd==004) {
-                        try {
-
-                            String mes = "";
-                            String id = "";
-                            id = (String) ois.readObject();
-                            mes=(String) ois.readObject();
-
-                            String correctid="&&"+id;
-
-                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-                            byte[] buffer = new byte[1024];
-                            int bytesRead;
-
-                            while ((bytesRead = ois.read(buffer)) != -1) {
-                                outputStream.write(buffer, 0, bytesRead);
-
-                                if (new String(buffer, 0, bytesRead).equals("STOP")) {
-                                    break;
-                                }
-                            }
-
-                            byte[] imageData = outputStream.toByteArray();
-                            outputStream.close();
-
-                            for (int times = 0; times < currentServer.mess.size(); times++)
-                            {
-                                if(currentServer.mess.get(times).curUser.equals(correctid)) {
-                                    try {
-
-                                        currentServer.mess.get(times).oos.writeInt(0031);
-                                        currentServer.mess.get(times).oos.flush();
-                                        currentServer.mess.get(times).oos.writeObject(mes);
-                                        currentServer.mess.get(times).oos.flush();
-                                        currentServer.mess.get(times).oos.write(imageData);
-                                        currentServer.mess.get(times).oos.flush();
-
-
-                                        String stopMessage = "STOP";
-                                        byte[] stopData = stopMessage.getBytes();
-                                        currentServer.mess.get(times).oos.write(stopData);
-                                        currentServer.mess.get(times).oos.flush();
-
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-
-                        }
-                    }
-                        break;
-
+                    chatRoom(cmd);
+                    break;
 
                 //学籍模块
                 case 2:
@@ -290,6 +137,185 @@ public class ClientThread extends Thread implements MessageTypes {
      *
      * @param cmd 接受的消息
      */
+
+    /**
+     * 聊天模块
+     *
+     * @param cmd 接受的消息
+     */
+    private void chatRoom(int cmd) {
+        if(cmd==001) {
+            String mes = "";
+
+            try {
+                mes = (String) ois.readObject();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println("消息会发给的人数为" + currentServer.mess.size());
+            for (ClientThread target:currentServer.mess) {
+                try {
+                    System.out.println(mes);
+                    target.oos.writeInt(0011);
+                    target.oos.flush();
+                    target.oos.writeObject(mes);
+                    target.oos.flush();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        else if(cmd==002) {
+            String mes = "";
+            String id = "";
+            try {
+                id = (String) ois.readObject();
+                mes=(String) ois.readObject();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            String correctid="&&"+id;
+
+            for (ClientThread target:currentServer.mess){
+                if(target.curUser.equals(correctid)){
+                    try {
+                        System.out.println("消息发送给"+correctid);
+                        System.out.println(mes);
+                        target.oos.writeInt(0011);
+                        target.oos.flush();
+                        target.oos.writeObject(mes);
+                        target.oos.flush();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        else if(cmd==003) {
+            try {
+                String mes = (String) ois.readObject();
+
+                // 传输消息给其他客户端
+                for (ClientThread target : currentServer.mess) {
+                    try {
+                        target.oos.writeInt(0031);
+                        target.oos.flush();
+                        target.oos.writeObject(mes);
+                        target.oos.flush();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                // 分块传输文件流
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+
+                while ((bytesRead = ois.read(buffer)) != -1) {
+                    // 传输文件流给其他客户端
+                    for (ClientThread target : currentServer.mess) {
+                        try {
+                            target.oos.write(buffer, 0, bytesRead);
+                            target.oos.flush();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (new String(buffer, 0, bytesRead).equals("STOP")) {
+                        break;
+                    }
+                }
+
+                // 发送停止标识给其他客户端
+                byte[] stopData = "STOP".getBytes();
+                for (ClientThread target : currentServer.mess) {
+                    try {
+                        target.oos.write(stopData);
+                        target.oos.flush();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        else if(cmd==004) {
+            try {
+
+                String mes = "";
+                String id = "";
+                id = (String) ois.readObject();
+                mes=(String) ois.readObject();
+
+                String correctid="&&"+id;
+                // 传输消息给其他客户端
+                for (ClientThread target : currentServer.mess) {
+                    if(target.curUser.equals(correctid)) {
+                        try {
+                            target.oos.writeInt(0031);
+                            target.oos.flush();
+                            target.oos.writeObject(mes);
+                            target.oos.flush();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                // 分块传输文件流
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+
+                while ((bytesRead = ois.read(buffer)) != -1) {
+                    // 传输文件流给其他客户端
+                    for (ClientThread target : currentServer.mess) {
+                        if (target.curUser.equals(correctid)) {
+                            try {
+                                target.oos.write(buffer, 0, bytesRead);
+                                target.oos.flush();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (new String(buffer, 0, bytesRead).equals("STOP")) {
+                            break;
+                        }
+                    }
+                }
+
+                // 发送停止标识给其他客户端
+                byte[] stopData = "STOP".getBytes();
+                for (ClientThread target : currentServer.mess) {
+                    if (target.curUser.equals(correctid)) {
+                        try {
+                            target.oos.write(stopData);
+                            target.oos.flush();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        else if(cmd==005){
+            try {
+                String mes = (String) ois.readObject();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
+    }
+
+
 
 
     /**
@@ -582,6 +608,7 @@ public class ClientThread extends Thread implements MessageTypes {
 
 
     }
+
 
 
 }
