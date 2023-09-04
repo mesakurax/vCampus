@@ -287,7 +287,7 @@ public class admin_2 extends JPanel {
     private JLabel label3;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
@@ -307,5 +307,5 @@ public class admin_2 extends JPanel {
                 }
             }
         });
-    }
+    }*/
 }

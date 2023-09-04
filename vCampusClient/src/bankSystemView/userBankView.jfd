@@ -517,9 +517,20 @@ new FormModel {
 					"height": 55
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "button2"
+					"text": "刷新"
+					"font": &Font0 new java.awt.Font( "微軟正黑體", 1, 28 )
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "refreshMouseClicked", false ) )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"width": 110
+					"height": 75
+					"x": 680
+					"y": 25
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "button1"
 					"text": "充值"
-					"font": new java.awt.Font( "微軟正黑體", 1, 28 )
+					"font": #Font0
 					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "button1MouseClicked", true ) )
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 					"x": 555
@@ -609,4 +620,3 @@ new FormModel {
 		} )
 	}
 }
-

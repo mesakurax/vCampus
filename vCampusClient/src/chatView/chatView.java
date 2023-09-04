@@ -60,7 +60,7 @@ public class chatView extends JPanel{
             //初始化用户名字
             message.getOs().writeInt(-100);
             message.getOs().flush();
-            message.getOs().writeObject(uu.getName());
+            message.getOs().writeObject(uu.getId());
             message.getOs().flush();
 
         }
@@ -98,13 +98,9 @@ public class chatView extends JPanel{
         }
 
         if(comboBox1.getSelectedItem().toString().equals("群发")){
-            String mes="(文本) "+uu.getId()+" "+uu.getName()+": ";
-            mes=mes+"\n"+textField1.getText()+"                             ";
-            for(int k=0;k<50;k++)
-            {
-                mes=mes+"- ";
-            }
-            mes=mes+"- - - - "+Timehelp.getCurrentTime();
+            String mes="(群发文本) "+uu.getId()+" "+uu.getName();
+            mes=mes+"  ["+Timehelp.getCurrentTime()+"] :\n";
+            mes=mes+textField1.getText();
 
             try {
                 message.getOs().writeInt(001);
@@ -123,13 +119,10 @@ public class chatView extends JPanel{
                 return;
             }
 
-            String mes="(文本) "+uu.getId()+" "+uu.getName()+"(私聊): ";
-            mes=mes+"\n"+textField1.getText()+"                              ";
-            for(int k=0;k<50;k++)
-            {
-                mes=mes+"- ";
-            }
-            mes=mes+"- - - - "+Timehelp.getCurrentTime();
+            String mes="(私聊文本) "+uu.getId()+" "+uu.getName();
+            mes=mes+"  ["+Timehelp.getCurrentTime()+"] :\n";
+            mes=mes+textField1.getText();
+
 
             try {
                 StyledDocument doc = textPane1.getStyledDocument();
@@ -187,13 +180,9 @@ public class chatView extends JPanel{
                     message.getOs().writeInt(003);
                     message.getOs().flush();
 
-                    String mes="(图像) "+uu.getId()+" "+uu.getName()+":                                   ";
-                    for(int k=0;k<50;k++)
-                    {
-                        mes=mes+"- ";
-                    }
-                    mes=mes+"- - - - "+Timehelp.getCurrentTime();
-                    mes=mes+"\n"+textField1.getText();
+                    String mes="(群发图片) "+uu.getId()+" "+uu.getName();
+                    mes=mes+"  ["+Timehelp.getCurrentTime()+"] :\n";
+
                     message.getOs().writeObject(mes);
                     message.getOs().flush();
 
@@ -260,13 +249,9 @@ public class chatView extends JPanel{
                     message.getOs().writeObject(textField2.getText());
                     message.getOs().flush();
 
-                    String mes="(图像) "+uu.getId()+" "+uu.getName()+"(私聊):                                   ";
-                    for(int k=0;k<50;k++)
-                    {
-                        mes=mes+"- ";
-                    }
-                    mes=mes+"- - - - "+Timehelp.getCurrentTime();
-                    mes=mes+"\n"+textField1.getText();
+                    String mes="(私聊图片) "+uu.getId()+" "+uu.getName();
+                    mes=mes+"  ["+Timehelp.getCurrentTime()+"] :\n";
+
                     message.getOs().writeObject(mes);
                     message.getOs().flush();
 
@@ -317,15 +302,75 @@ public class chatView extends JPanel{
         }
     }
 
+
+    private void fileMouseClicked() {
+        // TODO add your code here
+        if (comboBox1.getSelectedItem().toString().equals("群发")) {
+            JFileChooser fileChooser = new JFileChooser();
+
+            // 设置文件选择器的标题
+            fileChooser.setDialogTitle("选择文件");
+
+            // 显示文件选择器对话框
+            int result = fileChooser.showOpenDialog(null);
+
+            // 处理用户选择的结果
+            if (result == JFileChooser.APPROVE_OPTION) {
+                // 用户选择了文件
+                String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+                System.out.println("已选择文件路径：" + selectedFilePath);
+
+                try {
+                    //代表发送文件
+                    message.getOs().writeInt(005);
+                    message.getOs().flush();
+
+                    String selectedFileName = new File(selectedFilePath).getName();
+                    String mes="(群发文件) "+uu.getId()+" "+uu.getName();
+                    mes=mes+"  ["+Timehelp.getCurrentTime()+"] :\n"+selectedFileName;
+                    message.getOs().writeObject(mes);
+                    message.getOs().flush();
+
+
+                    FileInputStream fis = new FileInputStream(selectedFilePath);
+
+                    // 创建一个缓冲区，用于读取文件内容
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = fis.read(buffer)) != -1) {
+                        // 将文件内容写入输出流
+                        message.getOs().write(buffer, 0, bytesRead);
+                    }
+                    // 刷新输出流，并关闭连接
+                    message.getOs().flush();
+                    fis.close();
+
+
+                    String stopMessage = "STOP";
+                    byte[] stopData = stopMessage.getBytes();
+                    message.getOs().write(stopData);
+                    message.getOs().flush();
+
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+            } else if (result == JFileChooser.CANCEL_OPTION) {
+                // 用户取消了选择
+                System.out.println("选择被取消。");
+            }
+        }
+    }
+
     private void textPane1MouseClicked(MouseEvent e) {
         // TODO add your code here
         int offset = textPane1.viewToModel(e.getPoint());
 
         StyledDocument doc = textPane1.getStyledDocument();
-// 获取点击位置的元素
+        // 获取点击位置的元素
         Element element = doc.getCharacterElement(offset);
 
-// 检查是否是图像元素
+
         if (element.getAttributes().getAttribute(StyleConstants.IconAttribute) != null) {
             Icon icon = (Icon) element.getAttributes().getAttribute(StyleConstants.IconAttribute);
 
@@ -351,8 +396,8 @@ public class chatView extends JPanel{
                 ex.printStackTrace();
             }
         }
-
     }
+
 
 
 
@@ -372,8 +417,7 @@ public class chatView extends JPanel{
                         doc.insertString(doc.getLength(), mes, null);
 
                     }
-                    else if(cmd==0031)
-                    {
+                    else if(cmd==0031) {
                         String mes = (String) message.getIs().readObject();
                         System.out.println(mes);
 
@@ -409,15 +453,14 @@ public class chatView extends JPanel{
                         textPane1.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
                         textPane1.insertIcon(icon);
 
-
                     }
-
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
+
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
@@ -428,6 +471,7 @@ public class chatView extends JPanel{
         button2 = new JButton();
         comboBox1 = new JComboBox<>();
         textField2 = new JTextField();
+        button3 = new JButton();
 
         //======== this ========
         setPreferredSize(new Dimension(1680, 1030));
@@ -446,9 +490,9 @@ public class chatView extends JPanel{
             scrollPane3.setViewportView(textPane1);
         }
         add(scrollPane3);
-        scrollPane3.setBounds(340, 35, 1060, 810);
+        scrollPane3.setBounds(285, 30, 1060, 810);
         add(textField1);
-        textField1.setBounds(645, 935, 375, 60);
+        textField1.setBounds(525, 935, 460, 60);
 
         //---- button1 ----
         button1.setText("\u6d88\u606f");
@@ -459,7 +503,7 @@ public class chatView extends JPanel{
             }
         });
         add(button1);
-        button1.setBounds(new Rectangle(new Point(1460, 705), button1.getPreferredSize()));
+        button1.setBounds(1040, 935, 93, 55);
 
         //---- button2 ----
         button2.setText("\u56fe\u7247");
@@ -470,7 +514,7 @@ public class chatView extends JPanel{
             }
         });
         add(button2);
-        button2.setBounds(new Rectangle(new Point(1145, 950), button2.getPreferredSize()));
+        button2.setBounds(1160, 935, 85, 50);
 
         //---- comboBox1 ----
         comboBox1.setModel(new DefaultComboBoxModel<>(new String[] {
@@ -480,9 +524,20 @@ public class chatView extends JPanel{
         comboBox1.setFont(new Font("\u534e\u6587\u4eff\u5b8b", Font.BOLD, 14));
         comboBox1.addItemListener(e -> comboBox1ItemStateChanged());
         add(comboBox1);
-        comboBox1.setBounds(650, 890, 78, 30);
+        comboBox1.setBounds(530, 875, 118, 50);
         add(textField2);
-        textField2.setBounds(745, 885, 170, 40);
+        textField2.setBounds(685, 875, 145, 45);
+
+        //---- button3 ----
+        button3.setText("\u6587\u4ef6");
+        button3.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                fileMouseClicked();
+            }
+        });
+        add(button3);
+        button3.setBounds(1280, 940, 95, 45);
 
         {
             // compute preferred size
@@ -509,6 +564,7 @@ public class chatView extends JPanel{
     private JButton button2;
     private JComboBox<String> comboBox1;
     private JTextField textField2;
+    private JButton button3;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 
 }

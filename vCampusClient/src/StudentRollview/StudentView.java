@@ -35,6 +35,8 @@ public class StudentView extends JPanel {
                     SocketHelper skhp= new SocketHelper();
                     //	//
                     skhp.getConnection(skhp.ip ,skhp.port);
+                    skhp.getOs().writeInt(1);
+                    skhp.getOs().flush();
                     User uu = new User();
                     uu.setId("1");
                     JFrame frame = new JFrame();

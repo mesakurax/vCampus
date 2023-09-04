@@ -62,6 +62,8 @@ public class StuAdmin extends JPanel {
                 try {
                     SocketHelper skhp = new SocketHelper();
                     skhp.getConnection(SocketHelper.ip,SocketHelper.port);
+                    skhp.getOs().writeInt(1);
+                    skhp.getOs().flush();
                     JFrame frame = new JFrame();
                     StuAdmin stuAdmin = new StuAdmin(skhp);
 

@@ -13,17 +13,17 @@ new FormModel {
 					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "textPane1MouseClicked", false ) )
 				} )
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"x": 340
-				"y": 35
+				"x": 285
+				"y": 30
 				"width": 1060
 				"height": 810
 			} )
 			add( new FormComponent( "javax.swing.JTextField" ) {
 				name: "textField1"
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"x": 645
+				"x": 525
 				"y": 935
-				"width": 375
+				"width": 460
 				"height": 60
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
@@ -31,16 +31,20 @@ new FormModel {
 				"text": "消息"
 				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "messageMouseClicked", false ) )
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"x": 1460
-				"y": 705
+				"x": 1040
+				"y": 935
+				"height": 55
+				"width": 93
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "button2"
 				"text": "图片"
 				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "imageMouseClicked", false ) )
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"x": 1145
-				"y": 950
+				"x": 1160
+				"y": 935
+				"height": 50
+				"width": 85
 			} )
 			add( new FormComponent( "javax.swing.JComboBox" ) {
 				name: "comboBox1"
@@ -52,18 +56,28 @@ new FormModel {
 				"font": new java.awt.Font( "华文仿宋", 1, 14 )
 				addEvent( new FormEvent( "java.awt.event.ItemListener", "itemStateChanged", "comboBox1ItemStateChanged", false ) )
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"width": 78
-				"height": 30
-				"x": 650
-				"y": 890
+				"width": 118
+				"height": 50
+				"x": 530
+				"y": 875
 			} )
 			add( new FormComponent( "javax.swing.JTextField" ) {
 				name: "textField2"
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"x": 745
-				"y": 885
-				"width": 170
-				"height": 40
+				"x": 685
+				"y": 875
+				"width": 145
+				"height": 45
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button3"
+				"text": "文件"
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "fileMouseClicked", false ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 1280
+				"y": 940
+				"height": 45
+				"width": 95
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 20, 0 )
