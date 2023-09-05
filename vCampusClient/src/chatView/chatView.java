@@ -125,14 +125,6 @@ public class chatView extends JPanel{
 
 
             try {
-                StyledDocument doc = textPane1.getStyledDocument();
-                // 获取文档
-                textPane1.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
-                doc.insertString(doc.getLength(), "\n", null);
-                doc.insertString(doc.getLength(), "\n", null);
-                doc.insertString(doc.getLength(), mes, null);
-
-
                 message.getOs().writeInt(002);
                 message.getOs().flush();
                 message.getOs().writeObject(textField2.getText());
@@ -255,21 +247,7 @@ public class chatView extends JPanel{
                     message.getOs().writeObject(mes);
                     message.getOs().flush();
 
-                    BufferedImage image = ImageIO.read(new File(imagePath));
-                    ImageIcon icon = ImageHelper.resizeImage(image, 700, 600);
-
-                    StyledDocument doc = textPane1.getStyledDocument();
-
-                    textPane1.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
-                    doc.insertString(doc.getLength(), "\n", null);
-                    doc.insertString(doc.getLength(), "\n", null);
-                    doc.insertString(doc.getLength(), mes, null);
-                    doc.insertString(doc.getLength(), " ", null);
-                    textPane1.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
-                    textPane1.insertIcon(icon);
-
-                    FileInputStream fis=new FileInputStream(imagePath);
-                    BufferedInputStream bis = new BufferedInputStream(fis);
+                    BufferedInputStream bis = new BufferedInputStream(new FileInputStream(imagePath));
                     int readLen = 0;
                     byte[] buf = new byte[1024];
                     while( (readLen = bis.read(buf)) != -1 ) {
@@ -277,7 +255,6 @@ public class chatView extends JPanel{
                     }
                     message.getOs().flush();
                     bis.close();
-                    fis.close();
 
                     String stopMessage = "STOP";
                     byte[] stopData = stopMessage.getBytes();
@@ -330,7 +307,71 @@ public class chatView extends JPanel{
                     mes=mes+"  ["+Timehelp.getCurrentTime()+"] :\n"+selectedFileName;
                     message.getOs().writeObject(mes);
                     message.getOs().flush();
+                    message.getOs().writeObject(selectedFileName);
+                    message.getOs().flush();
 
+                    FileInputStream fis = new FileInputStream(selectedFilePath);
+
+                    // 创建一个缓冲区，用于读取文件内容
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = fis.read(buffer)) != -1) {
+                        // 将文件内容写入输出流
+                        message.getOs().write(buffer, 0, bytesRead);
+                    }
+                    // 刷新输出流，并关闭连接
+                    message.getOs().flush();
+                    fis.close();
+
+
+                    String stopMessage = "STOP";
+                    byte[] stopData = stopMessage.getBytes();
+                    message.getOs().write(stopData);
+                    message.getOs().flush();
+
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+            } else if (result == JFileChooser.CANCEL_OPTION) {
+                // 用户取消了选择
+                System.out.println("选择被取消。");
+            }
+        }
+
+        else if(comboBox1.getSelectedItem().toString().equals("私聊")) {
+            if (textField2.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "请输入聊天对象的ID！！");
+                return;
+            }
+            JFileChooser fileChooser = new JFileChooser();
+
+            // 设置文件选择器的标题
+            fileChooser.setDialogTitle("选择文件");
+
+            // 显示文件选择器对话框
+            int result = fileChooser.showOpenDialog(null);
+
+            // 处理用户选择的结果
+            if (result == JFileChooser.APPROVE_OPTION) {
+                // 用户选择了文件
+                String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+                System.out.println("已选择文件路径：" + selectedFilePath);
+
+                try {
+                    //代表发送文件
+                    message.getOs().writeInt(006);
+                    message.getOs().flush();
+                    message.getOs().writeObject(textField2.getText());
+                    message.getOs().flush();
+
+                    String selectedFileName = new File(selectedFilePath).getName();
+                    String mes="(群发文件) "+uu.getId()+" "+uu.getName();
+                    mes=mes+"  ["+Timehelp.getCurrentTime()+"] :\n"+selectedFileName;
+                    message.getOs().writeObject(mes);
+                    message.getOs().flush();
+                    message.getOs().writeObject(selectedFileName);
+                    message.getOs().flush();
 
                     FileInputStream fis = new FileInputStream(selectedFilePath);
 
@@ -361,6 +402,7 @@ public class chatView extends JPanel{
             }
         }
     }
+
 
     private void textPane1MouseClicked(MouseEvent e) {
         // TODO add your code here
@@ -397,7 +439,6 @@ public class chatView extends JPanel{
             }
         }
     }
-
 
 
 
@@ -454,6 +495,38 @@ public class chatView extends JPanel{
                         textPane1.insertIcon(icon);
 
                     }
+                    else if(cmd==0051){
+                        String mes = (String) message.getIs().readObject();
+                        System.out.println(mes);
+                        String filename=(String) message.getIs().readObject();
+
+
+                        // 获取当前项目的根路径
+                        String projectPath = System.getProperty("user.dir");
+                        String savePath = projectPath + "/" + "src/chatView/Sourse/"+filename;
+                        FileOutputStream fos = new FileOutputStream(savePath); // 将 "path/to/save/" 替换为你想要保存文件的实际路径
+                        System.out.println(savePath);
+
+                        // 接收文件数据并写入文件
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = message.getIs().read(buffer)) != -1) {
+                            fos.write(buffer, 0, bytesRead);
+                            fos.flush();
+                            if (new String(buffer, 0, bytesRead).equals("STOP")) {
+                                break;
+                            }
+                        }
+                        fos.close();
+
+                        StyledDocument doc = textPane1.getStyledDocument();
+
+                        textPane1.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
+                        doc.insertString(doc.getLength(), "\n", null);
+                        doc.insertString(doc.getLength(), "\n", null);
+                        doc.insertString(doc.getLength(), mes, null);
+                    }
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();

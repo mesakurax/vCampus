@@ -178,7 +178,7 @@ public class ClientThread extends Thread implements MessageTypes {
             String correctid="&&"+id;
 
             for (ClientThread target:currentServer.mess){
-                if(target.curUser.equals(correctid)){
+                if(target.curUser.equals(correctid)||target.curUser.equals(curUser)){
                     try {
                         System.out.println("消息发送给"+correctid);
                         System.out.println(mes);
@@ -243,22 +243,130 @@ public class ClientThread extends Thread implements MessageTypes {
             }
         }
 
-        else if(cmd==004) {
+        else if(cmd==004)  try {
+            String id ="&&"+(String) ois.readObject();
+            String mes = (String) ois.readObject();
+
+            // 传输消息给其他客户端
+            for (ClientThread target : currentServer.mess) {
+                if(target.curUser.equals(id)||target.curUser.equals(curUser)) {
+                    try {
+                        target.oos.writeInt(0031);
+                        target.oos.flush();
+                        target.oos.writeObject(mes);
+                        target.oos.flush();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            // 分块传输文件流
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+
+            while ((bytesRead = ois.read(buffer)) != -1) {
+                // 传输文件流给其他客户端
+                for (ClientThread target : currentServer.mess) {
+                    if(target.curUser.equals(id)||target.curUser.equals(curUser)) {
+                        try {
+                            target.oos.write(buffer, 0, bytesRead);
+                            target.oos.flush();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                if (new String(buffer, 0, bytesRead).equals("STOP")) {
+                    break;
+                }
+            }
+
+            // 发送停止标识给其他客户端
+            byte[] stopData = "STOP".getBytes();
+            for (ClientThread target : currentServer.mess) {
+                if(target.curUser.equals(id)||target.curUser.equals(curUser)) {
+                    try {
+                        target.oos.write(stopData);
+                        target.oos.flush();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        else if(cmd==005){
             try {
+                String mes = (String) ois.readObject();
+                String filename=(String) ois.readObject();
 
-                String mes = "";
-                String id = "";
-                id = (String) ois.readObject();
-                mes=(String) ois.readObject();
-
-                String correctid="&&"+id;
                 // 传输消息给其他客户端
                 for (ClientThread target : currentServer.mess) {
-                    if(target.curUser.equals(correctid)) {
+                    try {
+                        target.oos.writeInt(0051);
+                        target.oos.flush();
+                        target.oos.writeObject(mes);
+                        target.oos.flush();
+                        target.oos.writeObject(filename);
+                        target.oos.flush();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                // 分块传输文件流
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+
+                while ((bytesRead = ois.read(buffer)) != -1) {
+                    // 传输文件流给其他客户端
+                    for (ClientThread target : currentServer.mess) {
                         try {
-                            target.oos.writeInt(0031);
+                            target.oos.write(buffer, 0, bytesRead);
+                            target.oos.flush();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (new String(buffer, 0, bytesRead).equals("STOP")) {
+                        break;
+                    }
+                }
+
+                // 发送停止标识给其他客户端
+                byte[] stopData = "STOP".getBytes();
+                for (ClientThread target : currentServer.mess) {
+                    try {
+                        target.oos.write(stopData);
+                        target.oos.flush();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        else if(cmd==006){
+            try {
+
+                String id ="&&"+(String) ois.readObject();
+                String mes = (String) ois.readObject();
+                String filename=(String) ois.readObject();
+
+                // 传输消息给其他客户端
+                for (ClientThread target : currentServer.mess) {
+                    if (target.curUser.equals(id) || target.curUser.equals(curUser)) {
+                        try {
+                            target.oos.writeInt(0051);
                             target.oos.flush();
                             target.oos.writeObject(mes);
+                            target.oos.flush();
+                            target.oos.writeObject(filename);
                             target.oos.flush();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -273,7 +381,7 @@ public class ClientThread extends Thread implements MessageTypes {
                 while ((bytesRead = ois.read(buffer)) != -1) {
                     // 传输文件流给其他客户端
                     for (ClientThread target : currentServer.mess) {
-                        if (target.curUser.equals(correctid)) {
+                        if (target.curUser.equals(id) || target.curUser.equals(curUser)) {
                             try {
                                 target.oos.write(buffer, 0, bytesRead);
                                 target.oos.flush();
@@ -281,16 +389,16 @@ public class ClientThread extends Thread implements MessageTypes {
                                 e.printStackTrace();
                             }
                         }
-                        if (new String(buffer, 0, bytesRead).equals("STOP")) {
-                            break;
-                        }
+                    }
+                    if (new String(buffer, 0, bytesRead).equals("STOP")) {
+                        break;
                     }
                 }
 
                 // 发送停止标识给其他客户端
                 byte[] stopData = "STOP".getBytes();
                 for (ClientThread target : currentServer.mess) {
-                    if (target.curUser.equals(correctid)) {
+                    if (target.curUser.equals(id) || target.curUser.equals(curUser)) {
                         try {
                             target.oos.write(stopData);
                             target.oos.flush();
@@ -304,14 +412,6 @@ public class ClientThread extends Thread implements MessageTypes {
             }
         }
 
-        else if(cmd==005){
-            try {
-                String mes = (String) ois.readObject();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
-        }
 
     }
 
