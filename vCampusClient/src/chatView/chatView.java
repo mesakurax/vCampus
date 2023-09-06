@@ -366,7 +366,7 @@ public class chatView extends JPanel{
                     message.getOs().flush();
 
                     String selectedFileName = new File(selectedFilePath).getName();
-                    String mes="(群发文件) "+uu.getId()+" "+uu.getName();
+                    String mes="(私聊文件) "+uu.getId()+" "+uu.getName();
                     mes=mes+"  ["+Timehelp.getCurrentTime()+"] :\n"+selectedFileName;
                     message.getOs().writeObject(mes);
                     message.getOs().flush();
@@ -435,6 +435,28 @@ public class chatView extends JPanel{
                 // 打开临时文件，调用系统默认的图片查看器
                 desktop.open(tempFile);
             } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        else {
+            // 文本处理逻辑
+            Element paragraphElement = doc.getParagraphElement(offset);
+
+            try {
+                int start = paragraphElement.getStartOffset();
+                int end = paragraphElement.getEndOffset();
+
+                String text = doc.getText(start, end - start).trim();
+                String projectPath = System.getProperty("user.dir");
+                String savePath = projectPath + "/" + "src/chatView/Sourse/"+text;
+                File file = new File(savePath);
+
+                if (file.exists()) {
+                    Desktop.getDesktop().open(file);
+                } else {
+                    System.out.println("文件不存在");
+                }
+            } catch (BadLocationException | IOException ex) {
                 ex.printStackTrace();
             }
         }
