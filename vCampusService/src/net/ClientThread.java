@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Vector;
 
 
@@ -94,6 +96,12 @@ public class ClientThread extends Thread implements MessageTypes {
                 case 2:
                     StudentRoll(cmd);
                     break;
+
+                //图书馆
+                case  5:
+                    Library(cmd);
+                    break;
+
                 //银行模块
                 case 7:
                     bank(cmd);
@@ -544,6 +552,141 @@ public class ClientThread extends Thread implements MessageTypes {
      * @param cmd 接受的消息
      */
 
+
+    /**
+     * 图书馆模块
+     *
+     * @param cmd 接受的消息
+     */
+
+    public void Library(int cmd)
+    {
+        int flag=1;
+        BookSystem model=new BookSystem();
+        Book bk=new Book("","","","","","",0);
+        BookRecord record=new BookRecord("","","","","",false,"","","",0);
+
+        if(cmd/10==50)
+        {
+            try {
+                bk=(Book) ois.readObject();
+            } catch (IOException |ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            switch (cmd)
+            {
+                case 501:
+                    try {
+                        System.out.println("服务器收到信号");
+                        int writeback=model.addbook(bk)?5011:5012;
+                        System.out.println(writeback);
+                        oos.writeInt(writeback);
+                        oos.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case 502:
+                    try {
+                        int writeback=model.deletebook(bk)?5021:5022;
+                        System.out.println(writeback);
+                        oos.writeInt(writeback);
+                        oos.flush();
+                    } catch (IOException | SQLException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case 503:
+                    try {
+                        int writeback=model.modifybook(bk)?5031:5032;
+                        System.out.println(writeback);
+                        oos.writeInt(writeback);
+                        oos.flush();
+                    }catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case  504:
+                    try {
+                        flag=ois.readInt();
+                        System.out.println(flag);
+                        java.util.List<Book> list=model.searchbook(bk,flag);
+                        System.out.println(list.size());
+                        if(list!=null)
+                        {
+                            oos.writeObject(list);
+                            oos.flush();
+                        }
+                        else
+                        {
+                            oos.writeObject(null);
+                            oos.flush();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+        }
+        if(cmd/10==51)
+        {
+            try {
+                record=(BookRecord) ois.readObject();
+            } catch (IOException |ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            switch (cmd)
+            {
+                case 511:
+                    try {
+                        System.out.println("收到客户端请求");
+                        int writeback=model.borrowbook(record)?5111:5112;
+                        System.out.println(writeback);
+                        oos.writeInt(writeback);
+                        oos.flush();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case 512:
+                    try {
+                        int writeback=model.returnbook(record)?5121:5122;
+                        System.out.println(writeback);
+                        oos.writeInt(writeback);
+                        oos.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case 513:
+                    try {
+                        flag=ois.readInt();
+                        System.out.println(flag);
+                        List<BookRecord> list=model.searchstatus(record,flag);
+                        if(list!=null)
+                        {
+                            oos.writeObject(list);
+                            oos.flush();
+                        }
+                        else
+                        {
+                            oos.writeObject(null);
+                            oos.flush();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+        }
+    }
 
     /**
      * 商店模块
