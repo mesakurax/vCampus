@@ -5,6 +5,10 @@
 package chatView;
 
 
+
+import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.TargetDataLine;
+import javax.swing.event.*;
 import module.*;
 import entity.*;
 import utils.*;
@@ -20,11 +24,10 @@ import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
 import sun.swing.table.DefaultTableCellHeaderRenderer;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-
+import java.net.Socket;
 
 
 /**
@@ -34,6 +37,9 @@ public class chatView extends JPanel{
     private SocketHelper message=new SocketHelper();;
 
     private User uu;
+
+    private dengdai deng;
+
 
     public void beautify(){
         try {
@@ -78,26 +84,43 @@ public class chatView extends JPanel{
         doc.setParagraphAttributes(0, doc.getLength(), centerAlignment, false);
 
         try {
-            doc.insertString(doc.getLength(), "欢迎来到聊天室！\n", null);
+            // 设置欢迎语的样式
+            SimpleAttributeSet welcomeStyle = new SimpleAttributeSet();
+            StyleConstants.setFontFamily(welcomeStyle, "幼圆");  // 设置字体为幼圆
+            StyleConstants.setFontSize(welcomeStyle, 22);  // 设置字体大小为20
+            doc.insertString(doc.getLength(), "欢迎来到聊天室！\n", welcomeStyle);
 
-            // 设置后续行的对齐方式为顶格
+            // 设置后续行的样式
+            SimpleAttributeSet textStyle = new SimpleAttributeSet();
+            StyleConstants.setFontFamily(textStyle, "幼圆");  // 设置字体为幼圆
+            StyleConstants.setFontSize(textStyle, 16);  // 设置字体大小为14
+            doc.setParagraphAttributes(doc.getLength(), 1, textStyle, false);
             SimpleAttributeSet topAlignment = new SimpleAttributeSet();
             StyleConstants.setAlignment(topAlignment, StyleConstants.ALIGN_LEFT);
             doc.setParagraphAttributes(doc.getLength(), 1, topAlignment, false);
         } catch (BadLocationException e) {
             throw new RuntimeException(e);
         }
+
+        refreshlist();
     }
 
     private void messageMouseClicked() {
         // TODO add your code here
+        if(textField2.getText().isEmpty())
+        {
+            JOptionPane.showMessageDialog(this,"请选择聊天对象！！");
+            refreshlist();
+            return;
+        }
         if(textField1.getText().isEmpty())
         {
             JOptionPane.showMessageDialog(this,"请不要发送空消息！！");
+            refreshlist();
             return;
         }
 
-        if(comboBox1.getSelectedItem().toString().equals("群发")){
+        if(textField2.getText().equals("All user")){
             String mes="(群发文本) "+uu.getId()+" "+uu.getName();
             mes=mes+"  ["+Timehelp.getCurrentTime()+"] :\n";
             mes=mes+textField1.getText();
@@ -112,17 +135,10 @@ public class chatView extends JPanel{
             }
         }
 
-        else if(comboBox1.getSelectedItem().toString().equals("私聊")){
-            if(textField2.getText().isEmpty())
-            {
-                JOptionPane.showMessageDialog(this,"请输入聊天对象的ID！！");
-                return;
-            }
-
+        else {
             String mes="(私聊文本) "+uu.getId()+" "+uu.getName();
             mes=mes+"  ["+Timehelp.getCurrentTime()+"] :\n";
             mes=mes+textField1.getText();
-
 
             try {
                 message.getOs().writeInt(002);
@@ -137,19 +153,20 @@ public class chatView extends JPanel{
         }
 
         textField1.setText("");
-    }
+        refreshlist();
 
-
-    private void comboBox1ItemStateChanged() {
-        // TODO add your code here
-        if(comboBox1.getSelectedItem().toString().equals("群发"))
-            textField2.setText("");
     }
 
 
     private void imageMouseClicked() {
         // TODO add your code here
-        if(comboBox1.getSelectedItem().toString().equals("群发"))
+        if(textField2.getText().isEmpty())
+        {
+            JOptionPane.showMessageDialog(this,"请选择聊天对象！！");
+            refreshlist();
+            return;
+        }
+        if(textField2.getText().equals("All user"))
         {
             JFileChooser fileChooser = new JFileChooser();
 
@@ -209,7 +226,7 @@ public class chatView extends JPanel{
 
         }
 
-        else if(comboBox1.getSelectedItem().toString().equals("私聊"))
+        else
         {
             if(textField2.getText().isEmpty())
             {
@@ -277,12 +294,20 @@ public class chatView extends JPanel{
             }
 
         }
+
+        refreshlist();
     }
 
 
     private void fileMouseClicked() {
         // TODO add your code here
-        if (comboBox1.getSelectedItem().toString().equals("群发")) {
+        if(textField2.getText().isEmpty())
+        {
+            JOptionPane.showMessageDialog(this,"请选择聊天对象！！");
+            refreshlist();
+            return;
+        }
+        if (textField2.getText().equals("All user")) {
             JFileChooser fileChooser = new JFileChooser();
 
             // 设置文件选择器的标题
@@ -339,7 +364,7 @@ public class chatView extends JPanel{
             }
         }
 
-        else if(comboBox1.getSelectedItem().toString().equals("私聊")) {
+        else {
             if (textField2.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "请输入聊天对象的ID！！");
                 return;
@@ -401,6 +426,8 @@ public class chatView extends JPanel{
                 System.out.println("选择被取消。");
             }
         }
+
+        refreshlist();
     }
 
 
@@ -462,6 +489,49 @@ public class chatView extends JPanel{
         }
     }
 
+    private void refreshlist()
+    {
+        try {
+            message.getOs().writeInt(007);
+            message.getOs().flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void list1ValueChanged(ListSelectionEvent e) {
+        // TODO add your code here
+        if (!e.getValueIsAdjusting()) {
+            JList<String> source = (JList<String>) e.getSource();
+            String selectedItem = source.getSelectedValue();
+            if(selectedItem!=null)
+                textField2.setText(selectedItem);
+        }
+    }
+
+    private void tonghuaMouseClicked(MouseEvent e) {
+        // TODO add your code here
+        if(textField2.getText().isEmpty())
+        {
+            JOptionPane.showMessageDialog(this,"通话对象不能为空");
+            refreshlist();
+            return;
+        }
+        if(textField2.getText().equals("All user"))
+        {
+            JOptionPane.showMessageDialog(this,"请选择指定用户进行通话!");
+            refreshlist();
+            return;
+        }
+        try {
+            message.getOs().writeInt(8);
+            message.getOs().writeObject(textField2.getText());
+            message.getOs().flush();
+            deng=new dengdai();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
 
     class Message_L implements Runnable {
@@ -548,13 +618,89 @@ public class chatView extends JPanel{
                         doc.insertString(doc.getLength(), "\n", null);
                         doc.insertString(doc.getLength(), mes, null);
                     }
+                    else if(cmd==0071){
+                        String[] result=(String[]) message.getIs().readObject();
+                        DefaultListModel<String> listModel = new DefaultListModel<>();
+                        listModel.addElement("All user");
+                        for (String element : result) {
+                            listModel.addElement(element);
+                        }
+                        list1.setModel(listModel);
+                    }
+                    else if(cmd==81)
+                    {
+                        JFrame t=new tonghua(message);
+                        t.setVisible(true);
+                    }
+                    else if(cmd==91) {
+                        JOptionPane.showMessageDialog(null,"对方拒绝了你的通话！");
+                        deng.dispose();
+                    }
+                    else if(cmd==92) {
+                        String ip=(String) message.getIs().readObject();
+                        JOptionPane.showMessageDialog(null,"对方接受了了你的通话！");
+                        deng.dispose();
+                        new Thread(new tong_client(ip)).start();
 
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
+
+    class tong_client implements  Runnable {
+        private String port;
+
+        public tong_client(String s) {
+            port = s;
+        }
+
+        @Override
+        public void run() {
+            try {
+                Socket socket = new Socket(port, 9000);
+
+                OutputStream out = socket.getOutputStream();
+                System.out.println("客户端:连接成功");
+                // 保持通讯
+                InputStream in = socket.getInputStream();
+
+               // TargetDataLine targetDataLine = AudioUtils.getTargetDataLine();
+
+              // SourceDataLine sourceDataLine = AudioUtils.getSourceDataLine();
+
+                byte[] bos = new byte[2024];
+                byte[] bis = new byte[2024];
+
+                while (true) {
+                   /* System.out.println("Client:");
+
+                    //获取音频流
+                    int writeLen = targetDataLine.read(bos, 0, bos.length);
+                    //发
+                    if (bos != null) {
+                        //向对方发送拾音器获取到的音频
+                        System.out.println("Client 发");
+                        out.write(bos, 0, writeLen);
+                    }
+                    //收
+                    int readLen = in.read(bis);
+                    if (bis != null) {
+                        //播放对方发送来的音频
+                        System.out.println("Client 收");
+                        sourceDataLine.write(bis, 0, readLen);
+                    }
+*/
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
 
     private void initComponents() {
@@ -564,9 +710,12 @@ public class chatView extends JPanel{
         textField1 = new JTextField();
         button1 = new JButton();
         button2 = new JButton();
-        comboBox1 = new JComboBox<>();
         textField2 = new JTextField();
         button3 = new JButton();
+        button4 = new JButton();
+        scrollPane1 = new JScrollPane();
+        list1 = new JList();
+        label1 = new JLabel();
 
         //======== this ========
         setPreferredSize(new Dimension(1680, 1030));
@@ -576,6 +725,8 @@ public class chatView extends JPanel{
         {
 
             //---- textPane1 ----
+            textPane1.setFont(new Font("\u5e7c\u5706", Font.PLAIN, 13));
+            textPane1.setEditable(false);
             textPane1.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -585,9 +736,9 @@ public class chatView extends JPanel{
             scrollPane3.setViewportView(textPane1);
         }
         add(scrollPane3);
-        scrollPane3.setBounds(285, 30, 1060, 810);
+        scrollPane3.setBounds(285, 30, 1090, 775);
         add(textField1);
-        textField1.setBounds(525, 935, 460, 60);
+        textField1.setBounds(520, 895, 460, 60);
 
         //---- button1 ----
         button1.setText("\u6d88\u606f");
@@ -598,7 +749,7 @@ public class chatView extends JPanel{
             }
         });
         add(button1);
-        button1.setBounds(1040, 935, 93, 55);
+        button1.setBounds(1010, 900, 118, 55);
 
         //---- button2 ----
         button2.setText("\u56fe\u7247");
@@ -609,19 +760,12 @@ public class chatView extends JPanel{
             }
         });
         add(button2);
-        button2.setBounds(1160, 935, 85, 50);
+        button2.setBounds(1150, 900, 115, 55);
 
-        //---- comboBox1 ----
-        comboBox1.setModel(new DefaultComboBoxModel<>(new String[] {
-            "\u7fa4\u53d1",
-            "\u79c1\u804a"
-        }));
-        comboBox1.setFont(new Font("\u534e\u6587\u4eff\u5b8b", Font.BOLD, 14));
-        comboBox1.addItemListener(e -> comboBox1ItemStateChanged());
-        add(comboBox1);
-        comboBox1.setBounds(530, 875, 118, 50);
+        //---- textField2 ----
+        textField2.setEditable(false);
         add(textField2);
-        textField2.setBounds(685, 875, 145, 45);
+        textField2.setBounds(520, 835, 145, 45);
 
         //---- button3 ----
         button3.setText("\u6587\u4ef6");
@@ -632,7 +776,35 @@ public class chatView extends JPanel{
             }
         });
         add(button3);
-        button3.setBounds(1280, 940, 95, 45);
+        button3.setBounds(1285, 900, 110, 50);
+
+        //---- button4 ----
+        button4.setText("\u901a\u8bdd");
+        button4.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                tonghuaMouseClicked(e);
+            }
+        });
+        add(button4);
+        button4.setBounds(680, 835, 95, 45);
+
+        //======== scrollPane1 ========
+        {
+
+            //---- list1 ----
+            list1.setFont(new Font("\u5e7c\u5706", Font.PLAIN, 20));
+            list1.addListSelectionListener(e -> list1ValueChanged(e));
+            scrollPane1.setViewportView(list1);
+        }
+        add(scrollPane1);
+        scrollPane1.setBounds(80, 75, 160, 720);
+
+        //---- label1 ----
+        label1.setText("\u5728\u7ebf\u4eba\u5458");
+        label1.setFont(new Font("\u5e7c\u5706", Font.BOLD, 23));
+        add(label1);
+        label1.setBounds(95, 30, 115, 32);
 
         {
             // compute preferred size
@@ -657,9 +829,12 @@ public class chatView extends JPanel{
     private JTextField textField1;
     private JButton button1;
     private JButton button2;
-    private JComboBox<String> comboBox1;
     private JTextField textField2;
     private JButton button3;
+    private JButton button4;
+    private JScrollPane scrollPane1;
+    private JList list1;
+    private JLabel label1;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 
 }

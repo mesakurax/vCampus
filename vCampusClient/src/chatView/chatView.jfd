@@ -10,19 +10,21 @@ new FormModel {
 				name: "scrollPane3"
 				add( new FormComponent( "javax.swing.JTextPane" ) {
 					name: "textPane1"
+					"font": new java.awt.Font( "幼圆", 0, 13 )
+					"editable": false
 					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "textPane1MouseClicked", true ) )
 				} )
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 				"x": 285
 				"y": 30
-				"width": 1060
-				"height": 810
+				"width": 1090
+				"height": 775
 			} )
 			add( new FormComponent( "javax.swing.JTextField" ) {
 				name: "textField1"
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"x": 525
-				"y": 935
+				"x": 520
+				"y": 895
 				"width": 460
 				"height": 60
 			} )
@@ -31,41 +33,27 @@ new FormModel {
 				"text": "消息"
 				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "messageMouseClicked", false ) )
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"x": 1040
-				"y": 935
+				"x": 1010
+				"y": 900
 				"height": 55
-				"width": 93
+				"width": 118
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "button2"
 				"text": "图片"
 				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "imageMouseClicked", false ) )
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"x": 1160
-				"y": 935
-				"height": 50
-				"width": 85
-			} )
-			add( new FormComponent( "javax.swing.JComboBox" ) {
-				name: "comboBox1"
-				"model": new javax.swing.DefaultComboBoxModel {
-					selectedItem: "群发"
-					addElement( "群发" )
-					addElement( "私聊" )
-				}
-				"font": new java.awt.Font( "华文仿宋", 1, 14 )
-				addEvent( new FormEvent( "java.awt.event.ItemListener", "itemStateChanged", "comboBox1ItemStateChanged", false ) )
-			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"width": 118
-				"height": 50
-				"x": 530
-				"y": 875
+				"x": 1150
+				"y": 900
+				"height": 55
+				"width": 115
 			} )
 			add( new FormComponent( "javax.swing.JTextField" ) {
 				name: "textField2"
+				"editable": false
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"x": 685
-				"y": 875
+				"x": 520
+				"y": 835
 				"width": 145
 				"height": 45
 			} )
@@ -74,10 +62,43 @@ new FormModel {
 				"text": "文件"
 				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "fileMouseClicked", false ) )
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"x": 1280
-				"y": 940
+				"x": 1285
+				"y": 900
+				"height": 50
+				"width": 110
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button4"
+				"text": "通话"
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "tonghuaMouseClicked", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 680
+				"y": 835
 				"height": 45
 				"width": 95
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "scrollPane1"
+				add( new FormComponent( "javax.swing.JList" ) {
+					name: "list1"
+					"font": new java.awt.Font( "幼圆", 0, 20 )
+					addEvent( new FormEvent( "javax.swing.event.ListSelectionListener", "valueChanged", "list1ValueChanged", true ) )
+				} )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 80
+				"y": 75
+				"height": 720
+				"width": 160
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label1"
+				"text": "在线人员"
+				"font": new java.awt.Font( "幼圆", 1, 23 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 95
+				"y": 30
+				"width": 115
+				"height": 32
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 20, 0 )
@@ -85,3 +106,4 @@ new FormModel {
 		} )
 	}
 }
+

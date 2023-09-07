@@ -420,7 +420,86 @@ public class ClientThread extends Thread implements MessageTypes {
             }
         }
 
+        else if(cmd==007) {
+            String[] result = new String[currentServer.mess.size()];
 
+            int index = 0;
+            for (ClientThread server : currentServer.mess) {
+                String cur = server.curUser;
+
+                // 去掉前两个字符
+                String modifiedCur = cur.substring(2);
+                result[index++] = modifiedCur;
+            }
+
+            try {
+                oos.writeInt(0071);
+                oos.flush();
+                oos.writeObject(result);
+                oos.flush();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
+        //发起通话
+        else if(cmd==8)
+        {
+            try {
+                String id="&&"+(String) ois.readObject();
+                for(ClientThread target:currentServer.mess)
+                {
+                    if(target.curUser.equals(id))
+                    {
+                        target.oos.writeInt(81);
+                        target.oos.flush();
+                        target.oos.writeObject(curUser.substring(2));
+                        target.oos.flush();
+                        break;
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        //返回结果
+        else if(cmd==9)
+        {
+            try {
+                String id="&&"+(String) ois.readObject();
+                int num=ois.readInt();
+                if(num==91) {
+                    for (ClientThread target : currentServer.mess) {
+                        if (target.curUser.equals(id)) {
+                            target.oos.writeInt(91);
+                            target.oos.flush();
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    String ip=(String) ois.readObject();
+                    System.out.println(ip);
+                    for (ClientThread target : currentServer.mess) {
+                        if (target.curUser.equals(id)) {
+                            target.oos.writeInt(92);
+                            target.oos.writeObject(ip);
+                            target.oos.flush();
+                            break;
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 
