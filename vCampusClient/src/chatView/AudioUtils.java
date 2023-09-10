@@ -1,4 +1,4 @@
-package sqlutil;
+package chatView;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -53,7 +53,7 @@ public class AudioUtils {
             // 2.从音频流获取数据
             dataLineInfo = new DataLine.Info(SourceDataLine.class, af);
             sd = (SourceDataLine) AudioSystem.getLine(dataLineInfo);
-
+            // 打开具有指定格式的行，这样可使行获得所有所需的系统资源并变得可操作。
             sd.open(af);
             // 允许某一数据行执行数据 I/O
             sd.start();
@@ -67,8 +67,21 @@ public class AudioUtils {
      *
      * @return AudioFormat
      */
-    public static AudioFormat getAudioFormat() {
-        return new AudioFormat(AudioFormat.Encoding.PCM_UNSIGNED, 8000f, 8, 1, 1, AudioSystem.NOT_SPECIFIED, false);
+    public static AudioFormat getAudioFormat() throws LineUnavailableException {
+
+        // 获取默认音频格式
+        DataLine.Info lineInfo = new DataLine.Info(TargetDataLine.class, null);
+        AudioFormat defaultFormat = ((TargetDataLine) AudioSystem.getLine(lineInfo)).getFormat();
+
+        // 创建与默认音频格式相同的新音频格式
+        AudioFormat newFormat = new AudioFormat( defaultFormat.getEncoding(),defaultFormat.getSampleRate(),
+                defaultFormat.getSampleSizeInBits(),
+                defaultFormat.getChannels(),
+                defaultFormat.getFrameSize(),
+                defaultFormat.getFrameRate(),
+             defaultFormat.isBigEndian()
+        );
+        return newFormat;
     }
 
     /**

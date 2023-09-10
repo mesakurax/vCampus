@@ -10,8 +10,9 @@ import javax.swing.*;
 /**
  * @author 22431
  */
-public class dengdai extends JFrame {
-    public dengdai() {
+public class tonghua_wait extends JFrame {
+    public tonghua_wait()
+    {
         initComponents();
         // 设置窗口关闭操作为 DO_NOTHING_ON_CLOSE
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -39,16 +40,16 @@ public class dengdai extends JFrame {
             panel1Layout.setHorizontalGroup(
                 panel1Layout.createParallelGroup()
                     .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
-                        .addContainerGap(55, Short.MAX_VALUE)
+                        .addContainerGap(67, Short.MAX_VALUE)
                         .addComponent(label1, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE)
-                        .addGap(32, 32, 32))
+                        .addGap(20, 20, 20))
             );
             panel1Layout.setVerticalGroup(
                 panel1Layout.createParallelGroup()
-                    .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
-                        .addContainerGap(14, Short.MAX_VALUE)
+                    .addGroup(panel1Layout.createSequentialGroup()
+                        .addContainerGap()
                         .addComponent(label1, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
+                        .addContainerGap(14, Short.MAX_VALUE))
             );
         }
         contentPane.add(panel1);

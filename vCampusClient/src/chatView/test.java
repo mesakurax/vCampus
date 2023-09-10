@@ -20,9 +20,9 @@ public class test {
         User b1=new User();
         b1.setName("Ð¡ºì");
         b1.setId("090211");
-        client a=new client();
+        client_pp a=new client_pp();
         a.run(a1);
-        client b=new client();
+        client_pp b=new client_pp();
         b.run(b1);
        // client c=new client();
        // c.run();
@@ -32,8 +32,7 @@ public class test {
 
 
 
-
-class client {
+class client_pp {
 
     public void run(User info) {
         try {

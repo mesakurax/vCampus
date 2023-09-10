@@ -107,6 +107,10 @@ public class ClientThread extends Thread implements MessageTypes {
                     bank(cmd);
                     break;
 
+                case -3:
+                    currentServer.mess.remove(this);
+                    this.close();
+
             }
         }
     }
@@ -488,7 +492,10 @@ public class ClientThread extends Thread implements MessageTypes {
                     for (ClientThread target : currentServer.mess) {
                         if (target.curUser.equals(id)) {
                             target.oos.writeInt(92);
+                            target.oos.flush();
                             target.oos.writeObject(ip);
+                            target.oos.flush();
+                            target.oos.writeObject(curUser.substring(2));
                             target.oos.flush();
                             break;
                         }

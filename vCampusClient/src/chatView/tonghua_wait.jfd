@@ -8,8 +8,8 @@ new FormModel {
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq t {space ::55:x, comp label1:::p:166:p, space :p:32:p}}"
-				"$verticalGroup": "par l {seq t {space ::14:x, comp label1:::p:89:p, space :::p}}"
+				"$horizontalGroup": "par l {seq t {space ::67:x, comp label1:::p:166:p, space :p:20:p}}"
+				"$verticalGroup": "par l {seq l {space :::p, comp label1:::p:89:p, space ::14:x}}"
 			} ) {
 				name: "panel1"
 				add( new FormComponent( "javax.swing.JLabel" ) {

@@ -5,29 +5,22 @@
 package chatView;
 
 
-
-import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.TargetDataLine;
 import javax.swing.event.*;
-import module.*;
+
 import entity.*;
 import utils.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.*;
 import javax.swing.*;
 import javax.swing.text.*;
 
 import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
-import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
-import sun.swing.table.DefaultTableCellHeaderRenderer;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.Socket;
 
 
 /**
@@ -38,8 +31,9 @@ public class chatView extends JPanel{
 
     private User uu;
 
-    private dengdai deng;
+    private tonghua_wait deng;
 
+    private tonghua_accept accept;
 
     public void beautify(){
         try {
@@ -50,7 +44,6 @@ public class chatView extends JPanel{
             throw new RuntimeException(e);
         }
     }
-
 
     public chatView(User uu) {
 
@@ -101,7 +94,6 @@ public class chatView extends JPanel{
         } catch (BadLocationException e) {
             throw new RuntimeException(e);
         }
-
         refreshlist();
     }
 
@@ -527,14 +519,14 @@ public class chatView extends JPanel{
             message.getOs().writeInt(8);
             message.getOs().writeObject(textField2.getText());
             message.getOs().flush();
-            deng=new dengdai();
+            deng=new tonghua_wait();
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
     }
 
 
-    class Message_L implements Runnable {
+    public class Message_L implements Runnable {
         @Override
         public void run() {
             try {
@@ -548,6 +540,7 @@ public class chatView extends JPanel{
                         doc.insertString(doc.getLength(), "\n", null);
                         doc.insertString(doc.getLength(), "\n", null);
                         doc.insertString(doc.getLength(), mes, null);
+                        refreshlist();
 
                     }
                     else if(cmd==0031) {
@@ -585,6 +578,7 @@ public class chatView extends JPanel{
                         doc.insertString(doc.getLength(), " ", null);
                         textPane1.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
                         textPane1.insertIcon(icon);
+                        refreshlist();
 
                     }
                     else if(cmd==0051){
@@ -617,6 +611,7 @@ public class chatView extends JPanel{
                         doc.insertString(doc.getLength(), "\n", null);
                         doc.insertString(doc.getLength(), "\n", null);
                         doc.insertString(doc.getLength(), mes, null);
+                        refreshlist();
                     }
                     else if(cmd==0071){
                         String[] result=(String[]) message.getIs().readObject();
@@ -629,8 +624,8 @@ public class chatView extends JPanel{
                     }
                     else if(cmd==81)
                     {
-                        JFrame t=new tonghua(message);
-                        t.setVisible(true);
+                        accept=new tonghua_accept(message);
+                        accept.setVisible(true);
                     }
                     else if(cmd==91) {
                         JOptionPane.showMessageDialog(null,"对方拒绝了你的通话！");
@@ -638,10 +633,9 @@ public class chatView extends JPanel{
                     }
                     else if(cmd==92) {
                         String ip=(String) message.getIs().readObject();
-                        JOptionPane.showMessageDialog(null,"对方接受了了你的通话！");
+                        String text=(String) message.getIs().readObject();
                         deng.dispose();
-                        new Thread(new tong_client(ip)).start();
-
+                        new tonghua_clinet(ip,text);
                     }
                 }
             } catch (Exception e) {
@@ -649,58 +643,6 @@ public class chatView extends JPanel{
             }
         }
     }
-
-    class tong_client implements  Runnable {
-        private String port;
-
-        public tong_client(String s) {
-            port = s;
-        }
-
-        @Override
-        public void run() {
-            try {
-                Socket socket = new Socket(port, 9000);
-
-                OutputStream out = socket.getOutputStream();
-                System.out.println("客户端:连接成功");
-                // 保持通讯
-                InputStream in = socket.getInputStream();
-
-               // TargetDataLine targetDataLine = AudioUtils.getTargetDataLine();
-
-              // SourceDataLine sourceDataLine = AudioUtils.getSourceDataLine();
-
-                byte[] bos = new byte[2024];
-                byte[] bis = new byte[2024];
-
-                while (true) {
-                   /* System.out.println("Client:");
-
-                    //获取音频流
-                    int writeLen = targetDataLine.read(bos, 0, bos.length);
-                    //发
-                    if (bos != null) {
-                        //向对方发送拾音器获取到的音频
-                        System.out.println("Client 发");
-                        out.write(bos, 0, writeLen);
-                    }
-                    //收
-                    int readLen = in.read(bis);
-                    if (bis != null) {
-                        //播放对方发送来的音频
-                        System.out.println("Client 收");
-                        sourceDataLine.write(bis, 0, readLen);
-                    }
-*/
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 
 
     private void initComponents() {
@@ -776,7 +718,7 @@ public class chatView extends JPanel{
             }
         });
         add(button3);
-        button3.setBounds(1285, 900, 110, 50);
+        button3.setBounds(1285, 905, 110, 50);
 
         //---- button4 ----
         button4.setText("\u901a\u8bdd");
