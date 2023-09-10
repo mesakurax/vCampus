@@ -20,12 +20,15 @@ public class test {
         User b1=new User();
         b1.setName("Ð¡ºì");
         b1.setId("090211");
+        User c1=new User();
+        c1.setName("Ð¡ºìedkoi");
+        c1.setId("090216");
         client_pp a=new client_pp();
         a.run(a1);
         client_pp b=new client_pp();
         b.run(b1);
-       // client c=new client();
-       // c.run();
+       // client_pp c=new client_pp();
+     //   c.run(c1);
     }
 }
 

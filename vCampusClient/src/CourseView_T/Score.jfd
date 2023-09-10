@@ -1,0 +1,81 @@
+JFDML JFormDesigner: "8.1.1.0.298" Java: "17.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+			name: "addItem"
+			"preferredSize": new java.awt.Dimension( 400, 400 )
+			"visible": true
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq {space :p:41:p, comp addconfim:::p::p, space ::88:x, comp addcancel:::p::p, space :p:48:p}, seq {space :6:6:p, par l {seq l {par l {seq {comp label4:::p::p, space :0:0:x}, comp label5:::::x}, space s:::p, par l {comp qizhong::::148:x, comp qimo::::148:x}, space :::p}, par l:::p {seq {comp label1:::p:85:p, space :6:6:p, comp cid:::p:231:p}, seq {space :91:91:p, comp cname:::p:231:p}, comp label2:::p:100:p, seq {comp label3:::p::p, space :p:21:p, comp pingshi:::::x}}}}}"
+				"$verticalGroup": "par l {seq {space :22:22:p, par l {seq {space :8:8:p, comp label1:::p::p}, comp cid:::p:40:p}, space :12:12:p, par l {comp cname:::p:40:p, seq {space :8:8:p, comp label2:::p::p}}, par l {seq {space :p:21:p, comp label3:::p::p}, seq {space :p:13:p, comp pingshi:::p:40:p}}, par l {seq {space :p:24:p, comp label4:::p::p}, seq {space :p:16:p, comp qizhong:::p:40:p}}, par l {seq {space :p:20:p, comp label5:::p::p}, seq {space :p:12:p, comp qimo:::p:40:p}}, space :p:26:p, par b {comp addconfim::b:p::p, comp addcancel::b:p::p}}}"
+			} ) {
+				name: "MODIFY"
+				"preferredSize": new java.awt.Dimension( 333, 331 )
+				"foreground": new java.awt.Color( 43, 45, 48, 255 )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label1"
+					"text": "课程编号"
+					"font": new java.awt.Font( "华文仿宋", 0, 18 )
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label2"
+					"text": "课程名称"
+					"font": new java.awt.Font( "华文仿宋", 0, 18 )
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label3"
+					"text": "平时成绩占比（%）"
+					"font": new java.awt.Font( "华文仿宋", 0, 18 )
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label4"
+					"text": "期中成绩占比（%)"
+					"font": new java.awt.Font( "华文仿宋", 0, 18 )
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label5"
+					"text": "期末成绩占比（%）"
+					"font": new java.awt.Font( "华文仿宋", 0, 18 )
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "cid"
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "cname"
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "pingshi"
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "qizhong"
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "qimo"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "addconfim"
+					"text": "确认"
+					"font": new java.awt.Font( "华文仿宋", 0, 18 )
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "addconfimMouseClicked", true ) )
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "addcancel"
+					"text": "取消"
+					"font": new java.awt.Font( "华文仿宋", 0, 18 )
+				} )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 26
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label6"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/pic/梅庵.jpg" )
+				"foreground": new java.awt.Color( 43, 45, 48, 255 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 400, 400 )
+			"location": new java.awt.Point( 95, 35 )
+		} )
+	}
+}

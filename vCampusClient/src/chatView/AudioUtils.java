@@ -29,7 +29,7 @@ public class AudioUtils {
             // 1.获取音频流数据
             // af为AudioFormat也就是音频格式
             af = getAudioFormat();
-            info = new DataLine.Info(TargetDataLine.class, af);
+            info = new Info(TargetDataLine.class, af);
             // 这里的td实际上是
             td = (TargetDataLine) (AudioSystem.getLine(info));
             // 打开具有指定格式的行，这样可使行获得所有所需的系统资源并变得可操作。
@@ -51,7 +51,7 @@ public class AudioUtils {
             return sd;
         } else {
             // 2.从音频流获取数据
-            dataLineInfo = new DataLine.Info(SourceDataLine.class, af);
+            dataLineInfo = new Info(SourceDataLine.class, af);
             sd = (SourceDataLine) AudioSystem.getLine(dataLineInfo);
             // 打开具有指定格式的行，这样可使行获得所有所需的系统资源并变得可操作。
             sd.open(af);
@@ -70,7 +70,7 @@ public class AudioUtils {
     public static AudioFormat getAudioFormat() throws LineUnavailableException {
 
         // 获取默认音频格式
-        DataLine.Info lineInfo = new DataLine.Info(TargetDataLine.class, null);
+        Info lineInfo = new Info(TargetDataLine.class, null);
         AudioFormat defaultFormat = ((TargetDataLine) AudioSystem.getLine(lineInfo)).getFormat();
 
         // 创建与默认音频格式相同的新音频格式

@@ -2,10 +2,10 @@ package entity;
 
 import java.io.Serializable;
 public class BookRecord implements Serializable{
+    private static final long serialVersionUID = 111222333;
     private String name;//书名
     private int recordID;
     private String ISBN;//编号
-    private String BookID;//图书ID
     private String address;//馆藏地址
     private boolean status;//状态(true:可借，false:借出)
     private String deadline;//还书时间

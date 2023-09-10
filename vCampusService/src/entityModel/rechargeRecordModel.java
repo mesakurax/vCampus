@@ -1,7 +1,8 @@
 package entityModel;
 
-import entity.*;
-import sqlutil.*;
+import entity.rechargeRecord;
+import sqlutil.DBHelper;
+
 import java.sql.ResultSet;
 
 public class rechargeRecordModel {

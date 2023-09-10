@@ -9,13 +9,17 @@ import java.util.Vector;
 /**
  * 服务器主线程
  */
-public class ServerThread extends Thread {
+public class
+
+ServerThread extends Thread {
 
     private ServerSocket server;   //服务器Socket
 
-    private Vector<ClientThread> clients=new Vector<ClientThread>(); //已连接的客户端线程向量
+    public Vector<ClientThread> clients=new Vector<ClientThread>(); //已连接的客户端线程向量
 
     public Vector<ClientThread> mess=new Vector<ClientThread>(); //已连接的客户端线程向量
+
+    public int count=0;
 
     public SeverRun severRun;
 

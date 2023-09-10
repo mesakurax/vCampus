@@ -1,11 +1,15 @@
 package module;
 
-import entity.*;
-import entityModel.*;
+import entity.rechargeRecord;
+import entityModel.UserDao_Imp;
+import entityModel.rechargeRecordModel;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 public class bankSystem {
     private rechargeRecordModel model;
@@ -48,10 +52,18 @@ public class bankSystem {
 
     //同意充值记录
     public Boolean accept(rechargeRecord info) {
-        rechargeRecord temp = new rechargeRecord();
-        temp.setrId(info.getrId());
+        rechargeRecord temp = info;
         temp.setIsDispose(1);
         temp.setStatus("Success");
+
+        UserDao_Imp temp1=new UserDao_Imp();
+
+        try {
+            Double b = temp1.select(info.getuId()).getBalance();
+            temp1.updateC(info.getuId(),b+info.getAmount());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         return model.modify(temp);
     }
@@ -67,8 +79,7 @@ public class bankSystem {
 
 
     public static void main(String[] args) {
-        rechargeRecord temp = new rechargeRecord(8686, "59955", "1", 50, 9, "55", "u或");
-        rechargeRecordModel model = new rechargeRecordModel();
+        rechargeRecord temp = new rechargeRecord(1, "1", "1", 60, 9, "55", "u或");
         bankSystem p = new bankSystem();
         if (p.accept(temp))
             System.out.println("yes");

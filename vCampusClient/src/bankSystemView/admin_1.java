@@ -12,6 +12,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.*;
 
 
+import beautyComponent.TransparentTable;
 import module.*;
 import entity.*;
 import utils.*;
@@ -32,7 +33,7 @@ public class admin_1 extends JPanel {
     public void beautify(){
         try {
             BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.generalNoTranslucencyShadow;
-            org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
+            BeautyEyeLNFHelper.launchBeautyEyeLNF();
             UIManager.put("RootPane.setupButtonVisible",false);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -41,19 +42,21 @@ public class admin_1 extends JPanel {
     public admin_1(SocketHelper socketHelper) {
         beautify();
         initComponents();
+
+        new TransparentTable().set(scrollPane1);
         this.socketHelper=socketHelper;
         model=new bankSystem(this.socketHelper);
-        DefaultTableCellHeaderRenderer hr = new DefaultTableCellHeaderRenderer();
-        hr.setHorizontalAlignment(JLabel.CENTER);
-        table1.getTableHeader().setDefaultRenderer(hr);
-        DefaultTableCellRenderer r = new DefaultTableCellRenderer();
-        r.setHorizontalAlignment(JLabel.CENTER);
-        table1.setFont(new Font("宋体", Font.BOLD, 20));
-        table1.setDefaultRenderer(Object.class, r);
+
+        UIStyler.setBelowButton(button2);
+        UIStyler.setBelowButton(button3);
+        UIStyler.setBelowButton(button4);
+        UIStyler.setTransparentTable(scrollPane1);
+
+        table1.setFont(new Font("华文仿宋", Font.BOLD, 28));
         table1.setRowHeight(60);
         JTableHeader head = table1.getTableHeader(); // 创建表格标题对象
         head.setPreferredSize(new Dimension(head.getWidth(), 40));// 设置表头大小
-        head.setFont(new Font("华文仿宋", Font.BOLD, 30));
+
         refreshTable();
     }
     public void refreshTable() {
@@ -78,12 +81,6 @@ public class admin_1 extends JPanel {
         }
     }
 
-    private void searchMouseClicked(MouseEvent e) {
-        // TODO add your code here
-        if(textField1.getText()=="")
-            ;
-
-    }
 
     private void acceptMouseClicked(MouseEvent e) {
         // TODO add your code here
@@ -97,6 +94,8 @@ public class admin_1 extends JPanel {
 
             rechargeRecord temp=new rechargeRecord();
             temp.setrId((Integer) rowData[0]);
+            temp.setuId((String) rowData[1]);
+            temp.setAmount((Double) rowData[3]);
              if(this.model.admin_accept(temp))
                  JOptionPane.showMessageDialog(this,"已通过该充值请求！！");
              else
@@ -111,6 +110,7 @@ public class admin_1 extends JPanel {
     private void refuseMouseClicked(MouseEvent e) {
         // TODO add your code here、
         int selectedRow = table1.getSelectedRow();
+        selectedRow=table1.convertRowIndexToModel(selectedRow);
         if (selectedRow != -1) {
             TableModel model = table1.getModel();
             Object rowData[] = new Object[model.getColumnCount()];
@@ -234,19 +234,26 @@ public class admin_1 extends JPanel {
             scrollPane1.setViewportView(table1);
         }
         add(scrollPane1);
-        scrollPane1.setBounds(230, 155, 1145, 610);
+        scrollPane1.setBounds(45, 95, 1600, 695);
 
         //======== panel1 ========
         {
             panel1.setForeground(Color.white);
             panel1.setBackground(new Color(0x2b4e50));
             panel1.setPreferredSize(new Dimension(1685, 815));
+            panel1.setOpaque(false);
             panel1.setLayout(null);
+
+            //---- textField1 ----
+            textField1.setFont(new Font("\u6977\u4f53", Font.BOLD, 24));
+            textField1.setForeground(Color.black);
+            textField1.setBackground(Color.lightGray);
             panel1.add(textField1);
-            textField1.setBounds(225, 60, 260, 50);
+            textField1.setBounds(45, 15, 345, 65);
 
             //---- button3 ----
             button3.setText("\u62d2\u7edd");
+            button3.setFont(new Font("\u5e7c\u5706", Font.BOLD, 20));
             button3.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -254,10 +261,11 @@ public class admin_1 extends JPanel {
                 }
             });
             panel1.add(button3);
-            button3.setBounds(1425, 320, 120, 65);
+            button3.setBounds(610, 25, 150, 50);
 
             //---- button2 ----
             button2.setText("\u901a\u8fc7");
+            button2.setFont(new Font("\u5e7c\u5706", Font.BOLD, 20));
             button2.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -265,10 +273,11 @@ public class admin_1 extends JPanel {
                 }
             });
             panel1.add(button2);
-            button2.setBounds(1430, 225, 115, 65);
+            button2.setBounds(435, 25, 150, 50);
 
             //---- button4 ----
             button4.setText("\u5237\u65b0");
+            button4.setFont(new Font("\u5e7c\u5706", Font.BOLD, 20));
             button4.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -276,13 +285,7 @@ public class admin_1 extends JPanel {
                 }
             });
             panel1.add(button4);
-            button4.setBounds(525, 40, 115, 75);
-
-            //---- label3 ----
-            label3.setText("text");
-            label3.setIcon(new ImageIcon(getClass().getResource("/bankSystemView/pic/\u6682\u65e0\u94f6\u884c\u5361 (4).png")));
-            panel1.add(label3);
-            label3.setBounds(1120, 5, 935, 890);
+            button4.setBounds(795, 25, 150, 50);
 
             {
                 // compute preferred size
@@ -300,7 +303,13 @@ public class admin_1 extends JPanel {
             }
         }
         add(panel1);
-        panel1.setBounds(0, 0, 1685, 810);
+        panel1.setBounds(0, 0, 1685, 830);
+
+        //---- label3 ----
+        label3.setText("text");
+        label3.setIcon(new ImageIcon(getClass().getResource("/bankSystemView/pic/imageonline-co-brightnessadjusted (4).png")));
+        add(label3);
+        label3.setBounds(0, 0, 1685, 830);
 
         {
             // compute preferred size

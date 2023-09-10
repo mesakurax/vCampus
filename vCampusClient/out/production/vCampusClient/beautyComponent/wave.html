@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        .video {
+            width: 100px;
+            height: 100px;
+            border-radius: 50px;
+            background-color: rgb(255, 255, 255, 0.6);
+            transition: all 0.3s ease-in-out;
+            -webkit-animation适配-webkit内核的浏览器*/
+            -webkit-animation: ripple 1s linear infinite;
+            animation: ripple 1s linear infinite;
+        }
+
+        .video:hover {
+            background-color: #FFFFFF;
+            transform: scale(1.2);
+        }
+        @-webkit-keyframes ripple {
+            0% {
+                /* 在box四周添加三层白色阴影 */
+                box-shadow: 0 0 0 0 rgb(255 255 255 / 25%),
+                0 0 0 10px rgb(255 255 255 / 25%),
+                0 0 0 20px rgb(255 255 255 / 25%);
+            }
+
+            100% {
+                /* 分别改变三层阴影的距离
+                形成两帧的动画,然后在transition的过渡下形成动画 */
+                box-shadow: 0 0 0 10px rgb(255 255 255 / 25%),
+                0 0 0 20px rgb(255 255 255 / 25%),
+                0 0 0 40px rgba(50, 100, 245, 0);
+            }
+        }
+        @keyframes ripple {
+            0% {
+                box-shadow: 0 0 0 0 rgb(255 255 255 / 25%),
+                0 0 0 10px rgb(255 255 255 / 25%),
+                0 0 0 20px rgb(255 255 255 / 25%);
+            }
+            100% {
+                box-shadow: 0 0 0 10px rgb(255 255 255 / 25%),
+                0 0 0 20px rgb(255 255 255 / 25%),
+                0 0 0 40px rgba(50, 100, 245, 0);
+            }
+        }
+    </style>
+</head>
+<body style="background-color: cadetblue ;">
+<div class="video"></div>
+</body>
+</html>

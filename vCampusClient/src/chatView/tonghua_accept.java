@@ -6,6 +6,7 @@ package chatView;
 
 import java.awt.event.*;
 
+import utils.IPV4Helper;
 import utils.SocketHelper;
 
 import java.awt.*;
@@ -45,11 +46,12 @@ public class tonghua_accept extends JFrame {
             socketHelper.getOs().writeObject(textField1.getText());
             socketHelper.getOs().writeInt(92);
 
-            socketHelper.getOs().writeObject("localhost");
+            String ip= IPV4Helper.ipv4();
+            socketHelper.getOs().writeObject(ip);
             socketHelper.getOs().flush();
 
-            new tonghua_server(textField1.getText());
-            this.setVisible(false);
+            new tonghua_server(textField1.getText(),socketHelper);
+            this.dispose();
 
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -86,11 +88,11 @@ public class tonghua_accept extends JFrame {
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
-        label1 = new JLabel();
         panel1 = new JPanel();
         button1 = new JButton();
         button2 = new JButton();
         textField1 = new JTextField();
+        label1 = new JLabel();
 
         //======== this ========
         addWindowListener(new WindowAdapter() {
@@ -101,12 +103,6 @@ public class tonghua_accept extends JFrame {
         });
         Container contentPane = getContentPane();
         contentPane.setLayout(null);
-
-        //---- label1 ----
-        label1.setText("\u6765\u7535\u63d0\u793a");
-        label1.setFont(label1.getFont().deriveFont(label1.getFont().getSize() + 15f));
-        contentPane.add(label1);
-        label1.setBounds(150, 35, 140, label1.getPreferredSize().height);
 
         //======== panel1 ========
         {
@@ -121,7 +117,7 @@ public class tonghua_accept extends JFrame {
                 }
             });
             panel1.add(button1);
-            button1.setBounds(120, 185, button1.getPreferredSize().width, 40);
+            button1.setBounds(90, 195, 85, 50);
 
             //---- button2 ----
             button2.setText("\u62d2\u7edd");
@@ -132,9 +128,20 @@ public class tonghua_accept extends JFrame {
                 }
             });
             panel1.add(button2);
-            button2.setBounds(250, 185, button2.getPreferredSize().width, 40);
+            button2.setBounds(215, 195, 95, 50);
+
+            //---- textField1 ----
+            textField1.setHorizontalAlignment(SwingConstants.CENTER);
+            textField1.setFont(new Font("\u5e7c\u5706", Font.BOLD, 20));
+            textField1.setEditable(false);
             panel1.add(textField1);
-            textField1.setBounds(110, 95, 215, 50);
+            textField1.setBounds(75, 100, 245, 60);
+
+            //---- label1 ----
+            label1.setText("\u6765\u7535\u63d0\u793a");
+            label1.setFont(label1.getFont().deriveFont(label1.getFont().getSize() + 15f));
+            panel1.add(label1);
+            label1.setBounds(135, 45, 140, label1.getPreferredSize().height);
 
             {
                 // compute preferred size
@@ -174,10 +181,10 @@ public class tonghua_accept extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-    private JLabel label1;
     private JPanel panel1;
     private JButton button1;
     private JButton button2;
     private JTextField textField1;
+    private JLabel label1;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

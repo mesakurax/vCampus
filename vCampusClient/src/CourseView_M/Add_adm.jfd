@@ -1,0 +1,97 @@
+JFDML JFormDesigner: "8.1.1.0.298" Java: "17.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+			name: "this2"
+			"$sizePolicy": 1
+			"visible": true
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "scrollPane1"
+				add( new FormComponent( "javax.swing.JTable" ) {
+					name: "table1"
+					"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector {
+						add( new java.util.Vector {
+							add( null )
+							add( null )
+							add( null )
+							add( null )
+							add( null )
+							add( null )
+							add( null )
+							add( null )
+							add( null )
+						} )
+					}, new java.util.Vector {
+						add( "课程编号" )
+						add( "课程名称" )
+						add( "课程时间" )
+						add( "教室" )
+						add( "课程日期" )
+						add( "开课学院" )
+						add( "老师编号" )
+						add( "老师名称" )
+						add( "课程容量" )
+					}, new java.util.Vector {
+						add( null )
+						add( null )
+						add( null )
+						add( null )
+						add( null )
+						add( null )
+						add( null )
+						add( null )
+						add( null )
+					}, new java.util.Vector {
+						add( null )
+						add( null )
+						add( null )
+						add( null )
+						add( null )
+						add( null )
+						add( null )
+						add( null )
+						add( null )
+					}, new java.util.Vector {
+						add( null )
+						add( null )
+						add( null )
+						add( null )
+						add( null )
+						add( null )
+						add( null )
+						add( null )
+						add( null )
+					} )
+					"foreground": new java.awt.Color( 43, 45, 48, 255 )
+					"font": new java.awt.Font( "华文仿宋", 1, 14 )
+				} )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 860
+				"height": 75
+				"x": 20
+				"y": 5
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button1"
+				"text": "新增"
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "button1MouseClicked", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 905
+				"y": 25
+				"width": 105
+				"height": 40
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label1"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/pic/树.jpg" )
+				"foreground": new java.awt.Color( 43, 45, 48, 255 )
+				"font": new java.awt.Font( "华文仿宋", 1, 13 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 1060, 120 )
+			"location": new java.awt.Point( 0, 155 )
+		} )
+	}
+}

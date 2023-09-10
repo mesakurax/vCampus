@@ -32,7 +32,7 @@ public class tonghua_wait extends JFrame {
         {
 
             //---- label1 ----
-            label1.setText("\u7b49\u5f85\u63a5\u542c\u4e2d........");
+            label1.setText("\u7b49\u5f85\u5bf9\u65b9\u63a5\u542c\u4e2d........");
             label1.setFont(label1.getFont().deriveFont(label1.getFont().getSize() + 5f));
 
             GroupLayout panel1Layout = new GroupLayout(panel1);
@@ -40,9 +40,9 @@ public class tonghua_wait extends JFrame {
             panel1Layout.setHorizontalGroup(
                 panel1Layout.createParallelGroup()
                     .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
-                        .addContainerGap(67, Short.MAX_VALUE)
+                        .addContainerGap(52, Short.MAX_VALUE)
                         .addComponent(label1, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20))
+                        .addGap(40, 40, 40))
             );
             panel1Layout.setVerticalGroup(
                 panel1Layout.createParallelGroup()

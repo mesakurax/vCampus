@@ -4,68 +4,66 @@
 
 package LibraryView;
 
-import java.awt.event.*;
-import javax.swing.table.*;
-
+import utils.UIStyler;
 import entity.Book;
+import entity.*;
+import entity.BookIllegal;
 import entity.BookRecord;
 import module.BookSystem;
+import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
 import utils.SocketHelper;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
-import javax.swing.*;
 
 /**
  * @author 86153
  */
 public class Studentbookrecord extends JPanel {
     SocketHelper socketHelper;
-    String uid="dhb";
+    String uid;
     BookSystem model;
     Book book;
     List<Book> books;
     BookRecord record;
+    BookIllegal illegal;
     List<BookRecord> records;
-    public Studentbookrecord(SocketHelper helper) {
+    public void beautify() {
+        try {
+            BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.generalNoTranslucencyShadow;
+            BeautyEyeLNFHelper.launchBeautyEyeLNF();
+            UIManager.put("RootPane.setupButtonVisible", false);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public Studentbookrecord(SocketHelper helper,User uu) {
 
         initComponents();
+        this.uid=uu.getId();
+        //beautify();
         myrecord.setVisible(true);
+        UIStyler.setTransparentTable(scrollPane1);
+        setLayout(new BorderLayout()); // 设置布局管理器为 BorderLayout
+        table1.getTableHeader().setReorderingAllowed(false);
+        table1.getTableHeader().setReorderingAllowed(false);
+        UIStyler.setBelowButton(button1);
+        UIStyler.setBelowButton(returnbook);
         this.socketHelper=helper;
         setLayout(new BorderLayout()); // 设置布局管理器为BorderLayout
         add(myrecord, BorderLayout.CENTER); // 将myrecord添加到CENTER位置
         model=new BookSystem(socketHelper);
-        record=new BookRecord(null,null,null,null,null,false,null,null,uid,0);
-        List<BookRecord> rs=model.searchrecord(record,4);
-        records=rs;
-        DefaultTableModel tableModel = (DefaultTableModel) table1.getModel();
-        tableModel.setRowCount(0); // 清空表格数据
-        for (BookRecord bookRecord:records)
-
-        {
-            boolean over=ifover(bookRecord.getDeadline());
-            System.out.println(over);
-            String temp;
-            if(over)
-            {
-             temp="未逾期";
-            }
-            else
-            {
-                temp="逾期";
-            }
-
-            Object[] rowData = {bookRecord.getRecordID(), bookRecord.getISBN(), bookRecord.getName(),bookRecord.getAuthor(),bookRecord.getPublisher(), bookRecord.getAddress(), bookRecord.getBorrowtime(),
-                    bookRecord.getDeadline(),temp };
-            tableModel.addRow(rowData);
-        }
-
-
+        refreshtable();
+        table1.setRowHeight(60);
     }
 
     private boolean ifover(String deadline) {
@@ -77,6 +75,14 @@ public class Studentbookrecord extends JPanel {
             return true;
     }
 
+    public static long calculateDateDifference(String startDate, String endDate) {
+        LocalDate start = LocalDate.parse(startDate);
+        LocalDate end = LocalDate.parse(endDate);
+
+        long daysDifference = start.until(end, ChronoUnit.DAYS);
+
+        return daysDifference;
+    }
     private void returnbookMouseClicked(MouseEvent e) {
         // TODO add your code here
         int row=table1.getSelectedRow();
@@ -103,7 +109,18 @@ public class Studentbookrecord extends JPanel {
             }
             else
             {
-                JOptionPane.showMessageDialog(null, "还书失败", "", JOptionPane.ERROR_MESSAGE);
+                String returnday = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
+                long date=calculateDateDifference((String) table1.getValueAt(row, 7),returnday);
+                double pen=date*0.1;
+
+                DecimalFormat decimalFormat = new DecimalFormat("#.#"); // 使用一位小数的格式化
+                String formattedPen = decimalFormat.format(pen);
+                System.out.println(pen);
+                illegal=new BookIllegal(0,uid, (String) table1.getValueAt(row, 1),(String) table1.getValueAt(row, 2), (String) table1.getValueAt(row, 3),
+                        (String) table1.getValueAt(row, 6),(String) table1.getValueAt(row, 7),returnday,pen,false);
+                model.admin_addpen(illegal);
+                model.userreturn(record);
+                refreshtable();
             }
         }
     }
@@ -113,6 +130,7 @@ public class Studentbookrecord extends JPanel {
         List<BookRecord> rs=model.searchrecord(record,4);
         table1.clearSelection();
         records=rs;
+        table1.setRowHeight(120);
         DefaultTableModel tableModel = (DefaultTableModel) table1.getModel();
         tableModel.setRowCount(0); // 清空表格数据
         for (BookRecord bookRecord:records)
@@ -136,6 +154,17 @@ public class Studentbookrecord extends JPanel {
         }
 
     }
+
+    private void button1MouseClicked(MouseEvent e) {
+        // TODO add your code here
+        refreshtable();
+    }
+    private String Deadline(String date) {
+        LocalDate today = LocalDate.parse(date);
+        today = today.plusDays(21);
+        return today.toString();
+    }
+
 /*        final String[] p = new String[1];
         select.addActionListener(new ActionListener() {
             @Override
@@ -158,7 +187,11 @@ public class Studentbookrecord extends JPanel {
         myrecord = new JPanel();
         scrollPane1 = new JScrollPane();
         table1 = new JTable();
+        button1 = new JButton();
         returnbook = new JButton();
+        label3 = new JLabel();
+        label2 = new JLabel();
+        label1 = new JLabel();
 
         //======== myrecord ========
         {
@@ -180,10 +213,22 @@ public class Studentbookrecord extends JPanel {
                         "\u501f\u9605\u8bb0\u5f55\u53f7", "ISBN", "\u4e66\u540d", "\u4f5c\u8005", "\u51fa\u7248\u793e", "\u9986\u85cf\u5730", "\u501f\u9605\u65e5\u671f", "\u622a\u6b62\u65e5\u671f", "\u903e\u671f"
                     }
                 ));
+                table1.setForeground(Color.white);
                 scrollPane1.setViewportView(table1);
             }
             myrecord.add(scrollPane1);
-            scrollPane1.setBounds(130, 220, 705, scrollPane1.getPreferredSize().height);
+            scrollPane1.setBounds(130, 105, 1380, 690);
+
+            //---- button1 ----
+            button1.setText("\u5237\u65b0");
+            button1.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    button1MouseClicked(e);
+                }
+            });
+            myrecord.add(button1);
+            button1.setBounds(1250, 50, 150, 50);
 
             //---- returnbook ----
             returnbook.setText("\u8fd8\u4e66");
@@ -194,7 +239,24 @@ public class Studentbookrecord extends JPanel {
                 }
             });
             myrecord.add(returnbook);
-            returnbook.setBounds(new Rectangle(new Point(680, 170), returnbook.getPreferredSize()));
+            returnbook.setBounds(1085, 50, 150, 50);
+
+            //---- label3 ----
+            label3.setText("\u53ee\u4e1c\u63d0\u9192\u60a8\uff1a\u4e66\u4e2d\u81ea\u6709\u9ec4\u91d1\u5c4b\uff0c\u4e66\u4e2d\u81ea\u6709\u989c\u5982\u7389");
+            label3.setForeground(Color.white);
+            label3.setFont(new Font("\u5e7c\u5706", Font.BOLD, 30));
+            myrecord.add(label3);
+            label3.setBounds(435, 0, label3.getPreferredSize().width, 50);
+
+            //---- label2 ----
+            label2.setIcon(new ImageIcon(getClass().getResource("/LibraryView/pic/QQ\u56fe\u724720230914115703.gif")));
+            myrecord.add(label2);
+            label2.setBounds(new Rectangle(new Point(1385, 485), label2.getPreferredSize()));
+
+            //---- label1 ----
+            label1.setIcon(new ImageIcon(getClass().getResource("/LibraryView/pic/finalib.jpg")));
+            myrecord.add(label1);
+            label1.setBounds(new Rectangle(new Point(0, 0), label1.getPreferredSize()));
 
             {
                 // compute preferred size
@@ -218,6 +280,10 @@ public class Studentbookrecord extends JPanel {
     private JPanel myrecord;
     private JScrollPane scrollPane1;
     private JTable table1;
+    private JButton button1;
     private JButton returnbook;
+    private JLabel label3;
+    private JLabel label2;
+    private JLabel label1;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

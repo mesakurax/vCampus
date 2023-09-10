@@ -3,21 +3,23 @@ package entity;
 import java.io.Serializable;
 
 public class Book implements Serializable {
+    private static final long serialVersionUID = 111;
 
-    private String name;//ä¹¦å
-    private String ISBN;//å›¾ä¹¦ISBN
-    private String author;//ä½œè€…
-    private String publisher;//å‡ºç‰ˆå•†
-    private String publishdate;//å‘è¡Œæ—¥æœŸ
+    private String name;//ÊéÃû
+    private String ISBN;//Í¼ÊéISBN
+    private String author;//×÷Õß
+    private String publisher;//³ö°æÉÌ
+    private String publishdate;//·¢ĞĞÈÕÆÚ
+    private String intro;
+    private int count;//¿É½èÔÄÊıÁ¿
 
-    private int count;//å¯å€Ÿé˜…æ•°é‡
-
-    private String image;//å›¾ç‰‡
-    private String address;//é¦†è—åœ°
+    private String image;//Í¼Æ¬
+    private String address;//¹İ²ØµØ
+    private String category;
     public  Book(){
 
     }
-    public Book(String name_,String ISBN_,String author_,String publisher_,String publishdate_,String address_,int count_)
+    public Book(String name_,String ISBN_,String author_,String publisher_,String publishdate_,String address_,int count_,String intro_,String category_)
     {
         this.name=name_;
         this.ISBN=ISBN_;
@@ -26,9 +28,11 @@ public class Book implements Serializable {
         this.publishdate=publishdate_;
         this.count=count_;
         this.address=address_;
+        this.intro=intro_;
+        this.category=category_;
     }
 
-    public Book(String name_,String ISBN_,String author_,String publisher_,String publishdate_,String address_,int count_,String image_)
+    public Book(String name_,String ISBN_,String author_,String publisher_,String publishdate_,String address_,int count_,String image_,String intro_,String category_)
     {
         this.name=name_;
         this.ISBN=ISBN_;
@@ -38,6 +42,16 @@ public class Book implements Serializable {
         this.count=count_;
         this.image=image_;
         this.address=address_;
+        this.intro=intro_;
+        this.category=category_;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getCategory() {
+        return category;
     }
 
     public void setName(String name_){
@@ -75,5 +89,13 @@ public class Book implements Serializable {
 
     public String getAddress() {
         return this.address;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
+
+    public String getIntro() {
+        return intro;
     }
 }

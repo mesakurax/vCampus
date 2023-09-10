@@ -3,6 +3,7 @@ package entity;
 import java.io.Serializable;
 
 public class User implements Serializable {
+    private static final long serialVersionUID = 888999L;
     private String name;
     private String password;
     private String id;
@@ -93,6 +94,17 @@ public int getAge()
         occupation=occutemp;
         academy=acatemp;
     }
+    public User(String idtemp, String nametemp, String passwordtemp, String sextemp, int agetemp, double balancetemp, String occutemp, String acatemp)
+    {
+        id=idtemp;
+        name=nametemp;
+        password=passwordtemp;
+        age=agetemp;
+        sex=sextemp;
+        occupation=occutemp;
+        academy=acatemp;
+        balance=balancetemp;
+    }
 
     public User()
     {
@@ -101,13 +113,27 @@ public int getAge()
         password="12345";
         occupation="none";
         academy="none";
+        age=0;
         sex="unknown";
         balance=0.0;
     }
 
     public void UserPrint()
     {
-        System.out.println("id: "+id+" Password: "+password);
+        System.out.println("id: "+id+" name:"+name+" Password: "+password
+                +" occupation:"+occupation+" academy:"+academy+" sex:"+sex+" age:"+age);
+    }
+
+    public void copy(User utemp)
+    {
+        setId(utemp.getId());
+        setName(utemp.getName());
+        setPassword(utemp.getPassword());
+        setOccupation(utemp.getOccupation());
+        setAcademy(utemp.getAcademy());
+        setSex(utemp.getSex());
+        setBalance(utemp.getBalance());
+        setAge(utemp.getAge());
     }
 
 }

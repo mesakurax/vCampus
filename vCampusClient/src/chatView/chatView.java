@@ -21,6 +21,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 
 /**
@@ -34,6 +37,13 @@ public class chatView extends JPanel{
     private tonghua_wait deng;
 
     private tonghua_accept accept;
+
+    private tonghua_clinet tong_client;
+
+    private Vector<mytextpane> panelist=new Vector<mytextpane>();
+
+    private JTextPane curpane;
+
 
     public void beautify(){
         try {
@@ -49,6 +59,13 @@ public class chatView extends JPanel{
 
         beautify();
         this.uu=uu;
+        initComponents();
+
+        scrollPane3.setViewportView(null);
+
+        UIStyler.createHeader(this);
+        UIStyler.setTopButton(button2);
+
         message.getConnection(message.ip,message.port);
         try
         {
@@ -59,7 +76,7 @@ public class chatView extends JPanel{
             //初始化用户名字
             message.getOs().writeInt(-100);
             message.getOs().flush();
-            message.getOs().writeObject(uu.getId());
+            message.getOs().writeObject(uu.getId()+"-"+uu.getName());
             message.getOs().flush();
 
         }
@@ -67,54 +84,76 @@ public class chatView extends JPanel{
         {
             e.printStackTrace();
         }
-
-        initComponents();
         new Thread(new Message_L()).start();
 
-        StyledDocument doc = textPane1.getStyledDocument();
-        SimpleAttributeSet centerAlignment = new SimpleAttributeSet();
-        StyleConstants.setAlignment(centerAlignment, StyleConstants.ALIGN_CENTER);
-        doc.setParagraphAttributes(0, doc.getLength(), centerAlignment, false);
-
-        try {
-            // 设置欢迎语的样式
-            SimpleAttributeSet welcomeStyle = new SimpleAttributeSet();
-            StyleConstants.setFontFamily(welcomeStyle, "幼圆");  // 设置字体为幼圆
-            StyleConstants.setFontSize(welcomeStyle, 22);  // 设置字体大小为20
-            doc.insertString(doc.getLength(), "欢迎来到聊天室！\n", welcomeStyle);
-
-            // 设置后续行的样式
-            SimpleAttributeSet textStyle = new SimpleAttributeSet();
-            StyleConstants.setFontFamily(textStyle, "幼圆");  // 设置字体为幼圆
-            StyleConstants.setFontSize(textStyle, 16);  // 设置字体大小为14
-            doc.setParagraphAttributes(doc.getLength(), 1, textStyle, false);
-            SimpleAttributeSet topAlignment = new SimpleAttributeSet();
-            StyleConstants.setAlignment(topAlignment, StyleConstants.ALIGN_LEFT);
-            doc.setParagraphAttributes(doc.getLength(), 1, topAlignment, false);
-        } catch (BadLocationException e) {
-            throw new RuntimeException(e);
-        }
         refreshlist();
     }
 
-    private void messageMouseClicked() {
+    public void close()
+    {
+        try {
+            message.getOs().writeInt(-300);
+            message.getOs().flush();
+            panelist.clear();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    private void refreshlist()
+    {
+        try {
+            message.getOs().writeInt(007);
+            message.getOs().flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void list1ValueChanged(ListSelectionEvent e) {
         // TODO add your code here
+        if (!e.getValueIsAdjusting()) {
+            JList<String> source = (JList<String>) e.getSource();
+            String selectedItem = source.getSelectedValue();
+            if (selectedItem != null) {
+                textField2.setText(selectedItem);
+                mytextpane temp=search(selectedItem);
+                if(temp==null){
+                    mytextpane newtemp=new mytextpane(selectedItem,mytextpane.copyTextPane(textPane1,selectedItem));
+                    panelist.add(newtemp);
+                    curpane=newtemp.getTextPane();
+                    scrollPane3.setViewportView(null);
+                    scrollPane3.setViewportView(curpane);
+                }
+                else
+                {
+                    curpane=temp.getTextPane();
+                    scrollPane3.setViewportView(null);
+                    scrollPane3.setViewportView(curpane);
+                }
+            }
+        }
+    }
+
+    private void messageClicked() {
+        // TODO add your code here
+        refreshlist();
         if(textField2.getText().isEmpty())
         {
             JOptionPane.showMessageDialog(this,"请选择聊天对象！！");
-            refreshlist();
             return;
         }
         if(textField1.getText().isEmpty())
         {
             JOptionPane.showMessageDialog(this,"请不要发送空消息！！");
-            refreshlist();
             return;
         }
 
         if(textField2.getText().equals("All user")){
             String mes="(群发文本) "+uu.getId()+" "+uu.getName();
-            mes=mes+"  ["+Timehelp.getCurrentTime()+"] :\n";
+            mes=mes+"  ["+Timehelp.getCurrentTime()+"]\n";
             mes=mes+textField1.getText();
 
             try {
@@ -122,6 +161,29 @@ public class chatView extends JPanel{
                 message.getOs().flush();
                 message.getOs().writeObject(mes);
                 message.getOs().flush();
+
+                StyledDocument doc = curpane.getStyledDocument();
+
+
+                // 创建一个 SimpleAttributeSet 对象并设置对齐方式为右对齐
+                SimpleAttributeSet rightAlign = new SimpleAttributeSet();
+                StyleConstants.setAlignment(rightAlign, StyleConstants.ALIGN_RIGHT);
+
+                try {
+                    // 在插入文本之前设置插入点的属性
+                    doc.setParagraphAttributes(doc.getLength(), 1, rightAlign, false);
+
+                    // 插入两个换行符和要插入的文本
+                    doc.insertString(doc.getLength(), "\n\n", null);
+                    doc.insertString(doc.getLength(), mes, null);
+                    doc.insertString(doc.getLength(), "\n", null);
+
+
+                } catch (BadLocationException e) {
+                    e.printStackTrace();
+                }
+
+                refreshlist();
             }catch (Exception exception){
                 exception.printStackTrace();
             }
@@ -129,7 +191,7 @@ public class chatView extends JPanel{
 
         else {
             String mes="(私聊文本) "+uu.getId()+" "+uu.getName();
-            mes=mes+"  ["+Timehelp.getCurrentTime()+"] :\n";
+            mes=mes+"  ["+Timehelp.getCurrentTime()+"]\n";
             mes=mes+textField1.getText();
 
             try {
@@ -139,29 +201,44 @@ public class chatView extends JPanel{
                 message.getOs().flush();
                 message.getOs().writeObject(mes);
                 message.getOs().flush();
+
+                StyledDocument doc = curpane.getStyledDocument();
+                // 创建一个 SimpleAttributeSet 对象并设置对齐方式为右对齐
+                SimpleAttributeSet rightAlign = new SimpleAttributeSet();
+                StyleConstants.setAlignment(rightAlign, StyleConstants.ALIGN_RIGHT);
+
+                try {
+                    // 在插入文本之前设置插入点的属性
+                    doc.setParagraphAttributes(doc.getLength(), 1, rightAlign, false);
+
+                    // 插入两个换行符和要插入的文本
+                    doc.insertString(doc.getLength(), "\n\n", null);
+                    doc.insertString(doc.getLength(), mes, null);
+                    doc.insertString(doc.getLength(), "\n", null);
+                } catch (BadLocationException e) {
+                    e.printStackTrace();
+                }
+                refreshlist();
+
+
             }catch (Exception exception){
                 exception.printStackTrace();
             }
         }
-
         textField1.setText("");
-        refreshlist();
-
     }
 
-
-    private void imageMouseClicked() {
+    private void imageClicked()  {
         // TODO add your code here
+        refreshlist();
         if(textField2.getText().isEmpty())
         {
             JOptionPane.showMessageDialog(this,"请选择聊天对象！！");
-            refreshlist();
             return;
         }
         if(textField2.getText().equals("All user"))
         {
             JFileChooser fileChooser = new JFileChooser();
-
             // 设置文件过滤器，只显示图片文件
             FileNameExtensionFilter filter = new FileNameExtensionFilter("Image Files", "jpg", "jpeg", "png", "gif");
             fileChooser.setFileFilter(filter);
@@ -182,7 +259,7 @@ public class chatView extends JPanel{
                     message.getOs().flush();
 
                     String mes="(群发图片) "+uu.getId()+" "+uu.getName();
-                    mes=mes+"  ["+Timehelp.getCurrentTime()+"] :\n";
+                    mes=mes+"  ["+Timehelp.getCurrentTime()+"]\n";
 
                     message.getOs().writeObject(mes);
                     message.getOs().flush();
@@ -201,6 +278,27 @@ public class chatView extends JPanel{
                     message.getOs().write(stopData);
                     message.getOs().flush();
 
+                    BufferedImage image= ImageIO.read(new File(imagePath));
+                    ImageIcon icon = ImageHelper.resizeImage(image, 500, 300);
+
+                    StyledDocument doc = curpane.getStyledDocument();
+
+                    SimpleAttributeSet rightAlign = new SimpleAttributeSet();
+                    StyleConstants.setAlignment(rightAlign, StyleConstants.ALIGN_RIGHT);
+
+                    curpane.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
+                    doc.insertString(doc.getLength(), "\n\n", null);
+
+                    doc.setParagraphAttributes(doc.getLength(), 1, rightAlign, false);
+
+                    doc.insertString(doc.getLength(), mes, null);
+                    doc.insertString(doc.getLength(), " ", null);
+
+                    curpane.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
+                    curpane.insertIcon(icon);
+                    curpane.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
+                    doc.insertString(doc.getLength(), "\n", null);
+                    refreshlist();
                 }
                 catch (Exception e)
                 {
@@ -251,7 +349,7 @@ public class chatView extends JPanel{
                     message.getOs().flush();
 
                     String mes="(私聊图片) "+uu.getId()+" "+uu.getName();
-                    mes=mes+"  ["+Timehelp.getCurrentTime()+"] :\n";
+                    mes=mes+"  ["+Timehelp.getCurrentTime()+"]\n";
 
                     message.getOs().writeObject(mes);
                     message.getOs().flush();
@@ -270,6 +368,20 @@ public class chatView extends JPanel{
                     message.getOs().write(stopData);
                     message.getOs().flush();
 
+                    BufferedImage image= ImageIO.read(new File(imagePath));
+                    ImageIcon icon = ImageHelper.resizeImage(image, 700, 600);
+
+                    StyledDocument doc = curpane.getStyledDocument();
+
+                    curpane.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
+                    doc.insertString(doc.getLength(), "\n", null);
+                    doc.insertString(doc.getLength(), "\n", null);
+                    doc.insertString(doc.getLength(), mes, null);
+                    doc.insertString(doc.getLength(), " ", null);
+                    curpane.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
+                    curpane.insertIcon(icon);
+                    refreshlist();
+
                 }
                 catch (Exception e)
                 {
@@ -286,17 +398,14 @@ public class chatView extends JPanel{
             }
 
         }
-
-        refreshlist();
     }
 
-
-    private void fileMouseClicked() {
+    private void fileClicked() {
         // TODO add your code here
+        refreshlist();
         if(textField2.getText().isEmpty())
         {
             JOptionPane.showMessageDialog(this,"请选择聊天对象！！");
-            refreshlist();
             return;
         }
         if (textField2.getText().equals("All user")) {
@@ -321,7 +430,7 @@ public class chatView extends JPanel{
 
                     String selectedFileName = new File(selectedFilePath).getName();
                     String mes="(群发文件) "+uu.getId()+" "+uu.getName();
-                    mes=mes+"  ["+Timehelp.getCurrentTime()+"] :\n"+selectedFileName;
+                    mes=mes+"  ["+Timehelp.getCurrentTime()+"]\n"+selectedFileName;
                     message.getOs().writeObject(mes);
                     message.getOs().flush();
                     message.getOs().writeObject(selectedFileName);
@@ -345,6 +454,25 @@ public class chatView extends JPanel{
                     byte[] stopData = stopMessage.getBytes();
                     message.getOs().write(stopData);
                     message.getOs().flush();
+
+                    StyledDocument doc = curpane.getStyledDocument();
+
+                    // 创建一个 SimpleAttributeSet 对象并设置对齐方式为右对齐
+                    SimpleAttributeSet rightAlign = new SimpleAttributeSet();
+                    StyleConstants.setAlignment(rightAlign, StyleConstants.ALIGN_RIGHT);
+
+                    try {
+                        // 在插入文本之前设置插入点的属性
+                        doc.setParagraphAttributes(doc.getLength(), 1, rightAlign, false);
+
+                        // 插入两个换行符和要插入的文本
+                        doc.insertString(doc.getLength(), "\n\n", null);
+                        doc.insertString(doc.getLength(), mes, null);
+                        doc.insertString(doc.getLength(), "\n", null);
+                    } catch (BadLocationException e) {
+                        e.printStackTrace();
+                    }
+                    refreshlist();
 
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -384,7 +512,7 @@ public class chatView extends JPanel{
 
                     String selectedFileName = new File(selectedFilePath).getName();
                     String mes="(私聊文件) "+uu.getId()+" "+uu.getName();
-                    mes=mes+"  ["+Timehelp.getCurrentTime()+"] :\n"+selectedFileName;
+                    mes=mes+"  ["+Timehelp.getCurrentTime()+"]\n"+selectedFileName;
                     message.getOs().writeObject(mes);
                     message.getOs().flush();
                     message.getOs().writeObject(selectedFileName);
@@ -409,6 +537,25 @@ public class chatView extends JPanel{
                     message.getOs().write(stopData);
                     message.getOs().flush();
 
+                    StyledDocument doc = curpane.getStyledDocument();
+
+                    // 创建一个 SimpleAttributeSet 对象并设置对齐方式为右对齐
+                    SimpleAttributeSet rightAlign = new SimpleAttributeSet();
+                    StyleConstants.setAlignment(rightAlign, StyleConstants.ALIGN_RIGHT);
+
+                    try {
+                        // 在插入文本之前设置插入点的属性
+                        doc.setParagraphAttributes(doc.getLength(), 1, rightAlign, false);
+
+                        // 插入两个换行符和要插入的文本
+                        doc.insertString(doc.getLength(), "\n\n", null);
+                        doc.insertString(doc.getLength(), mes, null);
+                        doc.insertString(doc.getLength(), "\n", null);
+                    } catch (BadLocationException e) {
+                        e.printStackTrace();
+                    }
+                    refreshlist();
+
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -418,101 +565,19 @@ public class chatView extends JPanel{
                 System.out.println("选择被取消。");
             }
         }
+    }
 
+    private void phoneClicked() {
+        // TODO add your code here
         refreshlist();
-    }
-
-
-    private void textPane1MouseClicked(MouseEvent e) {
-        // TODO add your code here
-        int offset = textPane1.viewToModel(e.getPoint());
-
-        StyledDocument doc = textPane1.getStyledDocument();
-        // 获取点击位置的元素
-        Element element = doc.getCharacterElement(offset);
-
-
-        if (element.getAttributes().getAttribute(StyleConstants.IconAttribute) != null) {
-            Icon icon = (Icon) element.getAttributes().getAttribute(StyleConstants.IconAttribute);
-
-            // 创建一个弹出窗口
-            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(textPane1);
-
-            try {
-                // 创建临时文件
-                // 获取系统默认的图片查看器
-                Desktop desktop = Desktop.getDesktop();
-
-                // 创建临时文件
-                File tempFile = File.createTempFile("image", ".png");
-
-                // 将图像保存到临时文件
-                BufferedImage image = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-                icon.paintIcon(null, image.getGraphics(), 0, 0);
-                ImageIO.write(image, "png", tempFile);
-
-                // 打开临时文件，调用系统默认的图片查看器
-                desktop.open(tempFile);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        else {
-            // 文本处理逻辑
-            Element paragraphElement = doc.getParagraphElement(offset);
-
-            try {
-                int start = paragraphElement.getStartOffset();
-                int end = paragraphElement.getEndOffset();
-
-                String text = doc.getText(start, end - start).trim();
-                String projectPath = System.getProperty("user.dir");
-                String savePath = projectPath + "/" + "src/chatView/Sourse/"+text;
-                File file = new File(savePath);
-
-                if (file.exists()) {
-                    Desktop.getDesktop().open(file);
-                } else {
-                    System.out.println("文件不存在");
-                }
-            } catch (BadLocationException | IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    private void refreshlist()
-    {
-        try {
-            message.getOs().writeInt(007);
-            message.getOs().flush();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void list1ValueChanged(ListSelectionEvent e) {
-        // TODO add your code here
-        if (!e.getValueIsAdjusting()) {
-            JList<String> source = (JList<String>) e.getSource();
-            String selectedItem = source.getSelectedValue();
-            if(selectedItem!=null)
-                textField2.setText(selectedItem);
-        }
-    }
-
-    private void tonghuaMouseClicked(MouseEvent e) {
-        // TODO add your code here
         if(textField2.getText().isEmpty())
         {
             JOptionPane.showMessageDialog(this,"通话对象不能为空");
-            refreshlist();
             return;
         }
         if(textField2.getText().equals("All user"))
         {
             JOptionPane.showMessageDialog(this,"请选择指定用户进行通话!");
-            refreshlist();
             return;
         }
         try {
@@ -525,6 +590,82 @@ public class chatView extends JPanel{
         }
     }
 
+    private void gptClicked() {
+        // TODO add your code here
+        if(textField1.getText().isEmpty())
+        {
+            JOptionPane.showMessageDialog(this,"校园助手不接受输入空的内容！");
+            return;
+        }
+        mytextpane temp=search("校园助手");
+        if(temp==null){
+            mytextpane newtemp=new mytextpane("校园助手",mytextpane.copyTextPane(textPane1,"校园助手"));
+            panelist.add(newtemp);
+            curpane=newtemp.getTextPane();
+            scrollPane3.setViewportView(null);
+            scrollPane3.setViewportView(curpane);
+        }
+        else
+        {
+            curpane=temp.getTextPane();
+            scrollPane3.setViewportView(null);
+            scrollPane3.setViewportView(curpane);
+        }
+        String mes="(自动问答) "+uu.getId()+" "+uu.getName();
+        mes=mes+"  ["+Timehelp.getCurrentTime()+"]\n";
+        String ques=textField1.getText();
+        mes=mes+ques;
+
+        try {
+            message.getOs().writeInt(11);
+            message.getOs().flush();
+            message.getOs().writeObject(ques);
+            message.getOs().flush();
+
+            StyledDocument doc = curpane.getStyledDocument();
+            // 创建一个 SimpleAttributeSet 对象并设置对齐方式为右对齐
+            SimpleAttributeSet rightAlign = new SimpleAttributeSet();
+            StyleConstants.setAlignment(rightAlign, StyleConstants.ALIGN_RIGHT);
+
+            try {
+                // 在插入文本之前设置插入点的属性
+                doc.setParagraphAttributes(doc.getLength(), 1, rightAlign, false);
+
+                // 插入两个换行符和要插入的文本
+                doc.insertString(doc.getLength(), "\n\n", null);
+                doc.insertString(doc.getLength(), mes, null);
+                doc.insertString(doc.getLength(), "\n", null);
+            } catch (BadLocationException e) {
+                e.printStackTrace();
+            }
+            refreshlist();
+
+
+        }catch (Exception exception){
+            exception.printStackTrace();
+        }
+
+
+    }
+
+    private mytextpane search(String uid)
+    {
+        for(mytextpane target:panelist)
+            if (target.getUid().equals(uid))
+                return target;
+        return null;
+    }
+
+
+    private void button2MouseClicked() {
+        // TODO add your code here
+        refreshlist();
+    }
+
+    private void label8MouseClicked() {
+        // TODO add your code here
+        refreshlist();
+    }
 
     public class Message_L implements Runnable {
         @Override
@@ -533,17 +674,42 @@ public class chatView extends JPanel{
                 while (true) {
                     int cmd=message.getIs().readInt();
                     if (cmd == 0011 ) {
+                        String sendid=(String) message.getIs().readObject();
                         String mes = (String) message.getIs().readObject();
                         System.out.println(mes);
-                        StyledDocument doc = textPane1.getStyledDocument();
-                        textPane1.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
-                        doc.insertString(doc.getLength(), "\n", null);
-                        doc.insertString(doc.getLength(), "\n", null);
-                        doc.insertString(doc.getLength(), mes, null);
+
+                        mytextpane temp=search(sendid);
+                        JTextPane acceptpane=null;
+                        if(temp==null){
+                            mytextpane newtemp=new mytextpane(sendid,mytextpane.copyTextPane(textPane1,sendid));
+                            panelist.add(newtemp);
+                            acceptpane=newtemp.getTextPane();
+                        }
+                        else
+                            acceptpane=temp.getTextPane();
+
+
+                        StyledDocument doc = acceptpane.getStyledDocument();
+                        // 创建一个 SimpleAttributeSet 对象并设置对齐方式为右对齐
+                        SimpleAttributeSet leftAlign = new SimpleAttributeSet();
+                        StyleConstants.setAlignment(leftAlign, StyleConstants.ALIGN_LEFT);
+
+                        try {
+                            // 在插入文本之前设置插入点的属性
+                            doc.setParagraphAttributes(doc.getLength(), 1, leftAlign, false);
+
+                            // 插入两个换行符和要插入的文本
+                            doc.insertString(doc.getLength(), "\n\n", null);
+                            doc.insertString(doc.getLength(), mes, null);
+                            doc.insertString(doc.getLength(), "\n", null);
+                        } catch (BadLocationException e) {
+                            e.printStackTrace();
+                        }
                         refreshlist();
 
                     }
                     else if(cmd==0031) {
+                        String sendid=(String) message.getIs().readObject();
                         String mes = (String) message.getIs().readObject();
                         System.out.println(mes);
 
@@ -567,21 +733,44 @@ public class chatView extends JPanel{
                         inputStream.close();
 
 
-                        ImageIcon icon = ImageHelper.resizeImage(image, 700, 600);
+                        ImageIcon icon = ImageHelper.resizeImage(image, 500, 300);
 
-                        StyledDocument doc = textPane1.getStyledDocument();
+                        mytextpane temp=search(sendid);
+                        JTextPane acceptpane=null;
+                        if(temp==null){
+                            mytextpane newtemp=new mytextpane(sendid,mytextpane.copyTextPane(textPane1,sendid));
+                            panelist.add(newtemp);
+                            acceptpane=newtemp.getTextPane();
+                        }
+                        else
+                            acceptpane=temp.getTextPane();
 
-                        textPane1.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
+                        StyledDocument doc = acceptpane.getStyledDocument();
+
+                        SimpleAttributeSet leftAlign = new SimpleAttributeSet();
+                        StyleConstants.setAlignment(leftAlign, StyleConstants.ALIGN_LEFT);
+
+                        acceptpane.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
                         doc.insertString(doc.getLength(), "\n", null);
                         doc.insertString(doc.getLength(), "\n", null);
+
+
+                        doc.setParagraphAttributes(doc.getLength(), 1, leftAlign, false);
+
                         doc.insertString(doc.getLength(), mes, null);
                         doc.insertString(doc.getLength(), " ", null);
-                        textPane1.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
-                        textPane1.insertIcon(icon);
+
+                        acceptpane.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
+                        acceptpane.insertIcon(icon);
+                        acceptpane.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
+                        doc.insertString(doc.getLength(), "\n", null);
+
+                        refreshlist();
                         refreshlist();
 
                     }
                     else if(cmd==0051){
+                        String sendid=(String) message.getIs().readObject();
                         String mes = (String) message.getIs().readObject();
                         System.out.println(mes);
                         String filename=(String) message.getIs().readObject();
@@ -605,12 +794,33 @@ public class chatView extends JPanel{
                         }
                         fos.close();
 
-                        StyledDocument doc = textPane1.getStyledDocument();
+                        mytextpane temp=search(sendid);
+                        JTextPane acceptpane=null;
+                        if(temp==null){
+                            mytextpane newtemp=new mytextpane(sendid,mytextpane.copyTextPane(textPane1,sendid));
+                            panelist.add(newtemp);
+                            acceptpane=newtemp.getTextPane();
+                        }
+                        else
+                            acceptpane=temp.getTextPane();
 
-                        textPane1.setCaretPosition(doc.getLength()); // 将插入位置移动到最后
-                        doc.insertString(doc.getLength(), "\n", null);
-                        doc.insertString(doc.getLength(), "\n", null);
-                        doc.insertString(doc.getLength(), mes, null);
+                        StyledDocument doc = acceptpane.getStyledDocument();
+
+                        // 创建一个 SimpleAttributeSet 对象并设置对齐方式为右对齐
+                        SimpleAttributeSet leftAlign = new SimpleAttributeSet();
+                        StyleConstants.setAlignment(leftAlign, StyleConstants.ALIGN_LEFT);
+
+                        try {
+                            // 在插入文本之前设置插入点的属性
+                            doc.setParagraphAttributes(doc.getLength(), 1, leftAlign, false);
+
+                            // 插入两个换行符和要插入的文本
+                            doc.insertString(doc.getLength(), "\n\n", null);
+                            doc.insertString(doc.getLength(), mes, null);
+                            doc.insertString(doc.getLength(), "\n", null);
+                        } catch (BadLocationException e) {
+                            e.printStackTrace();
+                        }
                         refreshlist();
                     }
                     else if(cmd==0071){
@@ -635,7 +845,47 @@ public class chatView extends JPanel{
                         String ip=(String) message.getIs().readObject();
                         String text=(String) message.getIs().readObject();
                         deng.dispose();
-                        new tonghua_clinet(ip,text);
+                        tong_client=new tonghua_clinet(ip,text,message);
+                    }
+                    else if(cmd==101)
+                    {
+                        JOptionPane.showMessageDialog(null,"对方已挂断！！！");
+                    }
+                    else if(cmd==111)
+                    {
+                        String m="(自动问答) "+"校园助手";
+                        m=m+"  ["+Timehelp.getCurrentTime()+"]\n";
+                        String mes = m+(String) message.getIs().readObject();
+                        System.out.println(mes);
+
+                        mytextpane temp=search("校园助手");
+                        JTextPane acceptpane=null;
+                        if(temp==null){
+                            mytextpane newtemp=new mytextpane("校园助手",mytextpane.copyTextPane(textPane1,"校园助手"));
+                            panelist.add(newtemp);
+                            acceptpane=newtemp.getTextPane();
+                        }
+                        else
+                            acceptpane=temp.getTextPane();
+
+
+                        StyledDocument doc = acceptpane.getStyledDocument();
+                        // 创建一个 SimpleAttributeSet 对象并设置对齐方式为右对齐
+                        SimpleAttributeSet leftAlign = new SimpleAttributeSet();
+                        StyleConstants.setAlignment(leftAlign, StyleConstants.ALIGN_LEFT);
+
+                        try {
+                            // 在插入文本之前设置插入点的属性
+                            doc.setParagraphAttributes(doc.getLength(), 1, leftAlign, false);
+
+                            // 插入两个换行符和要插入的文本
+                            doc.insertString(doc.getLength(), "\n\n", null);
+                            doc.insertString(doc.getLength(), mes, null);
+                            doc.insertString(doc.getLength(), "\n", null);
+                        } catch (BadLocationException e) {
+                            e.printStackTrace();
+                        }
+                        refreshlist();
                     }
                 }
             } catch (Exception e) {
@@ -650,13 +900,20 @@ public class chatView extends JPanel{
         scrollPane3 = new JScrollPane();
         textPane1 = new JTextPane();
         textField1 = new JTextField();
-        button1 = new JButton();
-        button2 = new JButton();
         textField2 = new JTextField();
-        button3 = new JButton();
-        button4 = new JButton();
         scrollPane1 = new JScrollPane();
         list1 = new JList();
+        panel1 = new JPanel();
+        label3 = new JLabel();
+        label4 = new JLabel();
+        label6 = new JLabel();
+        label5 = new JLabel();
+        label7 = new JLabel();
+        label8 = new JLabel();
+        button2 = new JButton();
+        panel2 = new JPanel();
+        label11 = new JLabel();
+        label2 = new JLabel();
         label1 = new JLabel();
 
         //======== this ========
@@ -669,84 +926,181 @@ public class chatView extends JPanel{
             //---- textPane1 ----
             textPane1.setFont(new Font("\u5e7c\u5706", Font.PLAIN, 13));
             textPane1.setEditable(false);
-            textPane1.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    textPane1MouseClicked(e);
-                }
-            });
+            textPane1.setOpaque(false);
             scrollPane3.setViewportView(textPane1);
         }
         add(scrollPane3);
-        scrollPane3.setBounds(285, 30, 1090, 775);
+        scrollPane3.setBounds(230, 215, 1055, 665);
+
+        //---- textField1 ----
+        textField1.setFont(new Font("\u5e7c\u5706", Font.BOLD, 18));
         add(textField1);
-        textField1.setBounds(520, 895, 460, 60);
-
-        //---- button1 ----
-        button1.setText("\u6d88\u606f");
-        button1.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                messageMouseClicked();
-            }
-        });
-        add(button1);
-        button1.setBounds(1010, 900, 118, 55);
-
-        //---- button2 ----
-        button2.setText("\u56fe\u7247");
-        button2.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                imageMouseClicked();
-            }
-        });
-        add(button2);
-        button2.setBounds(1150, 900, 115, 55);
+        textField1.setBounds(230, 905, 550, 70);
 
         //---- textField2 ----
         textField2.setEditable(false);
+        textField2.setFont(new Font("\u5e7c\u5706", Font.BOLD, 20));
+        textField2.setHorizontalAlignment(SwingConstants.CENTER);
         add(textField2);
-        textField2.setBounds(520, 835, 145, 45);
-
-        //---- button3 ----
-        button3.setText("\u6587\u4ef6");
-        button3.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                fileMouseClicked();
-            }
-        });
-        add(button3);
-        button3.setBounds(1285, 905, 110, 50);
-
-        //---- button4 ----
-        button4.setText("\u901a\u8bdd");
-        button4.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                tonghuaMouseClicked(e);
-            }
-        });
-        add(button4);
-        button4.setBounds(680, 835, 95, 45);
+        textField2.setBounds(1305, 215, 185, 55);
 
         //======== scrollPane1 ========
         {
 
             //---- list1 ----
             list1.setFont(new Font("\u5e7c\u5706", Font.PLAIN, 20));
+            list1.setOpaque(false);
             list1.addListSelectionListener(e -> list1ValueChanged(e));
             scrollPane1.setViewportView(list1);
         }
         add(scrollPane1);
-        scrollPane1.setBounds(80, 75, 160, 720);
+        scrollPane1.setBounds(1305, 280, 185, 600);
+
+        //======== panel1 ========
+        {
+            panel1.setOpaque(false);
+
+            //---- label3 ----
+            label3.setIcon(new ImageIcon(getClass().getResource("/chatView/pic/\u56fe\u7247.png")));
+            label3.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    imageClicked();
+                }
+            });
+
+            //---- label4 ----
+            label4.setIcon(new ImageIcon(getClass().getResource("/chatView/pic/\u6d88\u606f-\u7f6e\u7070.png")));
+            label4.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    messageClicked();
+                }
+            });
+
+            //---- label6 ----
+            label6.setIcon(new ImageIcon(getClass().getResource("/chatView/pic/\u8ba2\u5355.png")));
+            label6.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    fileClicked();
+                }
+            });
+
+            //---- label5 ----
+            label5.setIcon(new ImageIcon(getClass().getResource("/chatView/pic/\u7535\u8bdd.png")));
+            label5.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    phoneClicked();
+                }
+            });
+
+            //---- label7 ----
+            label7.setIcon(new ImageIcon(getClass().getResource("/chatView/pic/icons8-chatgpt-96.png")));
+            label7.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    gptClicked();
+                }
+            });
+
+            //---- label8 ----
+            label8.setIcon(new ImageIcon(getClass().getResource("/chatView/pic/\u5237\u65b0.png")));
+            label8.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    label8MouseClicked();
+                }
+            });
+
+            GroupLayout panel1Layout = new GroupLayout(panel1);
+            panel1.setLayout(panel1Layout);
+            panel1Layout.setHorizontalGroup(
+                panel1Layout.createParallelGroup()
+                    .addGroup(panel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(label4)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(label3)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(label6)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(label5)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(label7)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                        .addComponent(label8, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+            );
+            panel1Layout.setVerticalGroup(
+                panel1Layout.createParallelGroup()
+                    .addGroup(panel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(panel1Layout.createParallelGroup()
+                            .addComponent(label8, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                .addComponent(label4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(label3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(label6, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(label5, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(label7, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(18, 18, 18))
+            );
+        }
+        add(panel1);
+        panel1.setBounds(800, 885, 450, 100);
+
+        //---- button2 ----
+        button2.setText("\u5237\u65b0");
+        button2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                button2MouseClicked();
+            }
+        });
+        add(button2);
+        button2.setBounds(230, 150, 150, 50);
+
+        //======== panel2 ========
+        {
+            panel2.setBackground(new Color(0x24321e));
+            panel2.setLayout(null);
+
+            //---- label11 ----
+            label11.setText("\u5728\u7ebf\u8054\u7edc\u5e73\u53f0");
+            label11.setFont(new Font("\u6977\u4f53", Font.BOLD, 60));
+            label11.setForeground(Color.white);
+            panel2.add(label11);
+            label11.setBounds(1035, 15, 600, 135);
+
+            //---- label2 ----
+            label2.setIcon(new ImageIcon(getClass().getResource("/chatView/pic/img.png")));
+            panel2.add(label2);
+            label2.setBounds(60, 10, 745, 130);
+
+            {
+                // compute preferred size
+                Dimension preferredSize = new Dimension();
+                for(int i = 0; i < panel2.getComponentCount(); i++) {
+                    Rectangle bounds = panel2.getComponent(i).getBounds();
+                    preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
+                    preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
+                }
+                Insets insets = panel2.getInsets();
+                preferredSize.width += insets.right;
+                preferredSize.height += insets.bottom;
+                panel2.setMinimumSize(preferredSize);
+                panel2.setPreferredSize(preferredSize);
+            }
+        }
+        add(panel2);
+        panel2.setBounds(0, 0, 1685, 150);
 
         //---- label1 ----
-        label1.setText("\u5728\u7ebf\u4eba\u5458");
-        label1.setFont(new Font("\u5e7c\u5706", Font.BOLD, 23));
+        label1.setIcon(new ImageIcon(getClass().getResource("/chatView/pic/imageonline-co-brightnessadjusted (1).png")));
         add(label1);
-        label1.setBounds(95, 30, 115, 32);
+        label1.setBounds(0, 200, 1685, 830);
 
         {
             // compute preferred size
@@ -769,13 +1123,20 @@ public class chatView extends JPanel{
     private JScrollPane scrollPane3;
     private JTextPane textPane1;
     private JTextField textField1;
-    private JButton button1;
-    private JButton button2;
     private JTextField textField2;
-    private JButton button3;
-    private JButton button4;
     private JScrollPane scrollPane1;
     private JList list1;
+    private JPanel panel1;
+    private JLabel label3;
+    private JLabel label4;
+    private JLabel label6;
+    private JLabel label5;
+    private JLabel label7;
+    private JLabel label8;
+    private JButton button2;
+    private JPanel panel2;
+    private JLabel label11;
+    private JLabel label2;
     private JLabel label1;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 

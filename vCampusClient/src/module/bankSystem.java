@@ -1,6 +1,8 @@
 package module;
-import utils.*;
-import entity.*;
+
+import entity.User;
+import entity.rechargeRecord;
+import utils.SocketHelper;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -188,6 +190,23 @@ public class bankSystem {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public double query_balance(User uu)
+    {
+        try {
+            os.writeInt(709);
+            os.writeObject(new rechargeRecord());
+            os.writeObject(uu);
+            os.flush();
+
+            return is.readDouble();
+
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
 }

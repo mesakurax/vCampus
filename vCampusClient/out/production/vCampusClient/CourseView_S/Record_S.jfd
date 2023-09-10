@@ -1,0 +1,169 @@
+JFDML JFormDesigner: "8.1.1.0.298" Java: "17.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+			name: "this"
+			"preferredSize": new java.awt.Dimension( 1685, 860 )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+				name: "panel1"
+				"preferredSize": new java.awt.Dimension( 1685, 830 )
+				"background": new java.awt.Color( 223, 225, 229, 255 )
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "scrollPane2"
+					"preferredSize": new java.awt.Dimension( 460, 427 )
+					add( new FormComponent( "javax.swing.JTable" ) {
+						name: "table2"
+						"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector {
+							add( new java.util.Vector {
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+							} )
+							add( new java.util.Vector {
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+								add( null )
+							} )
+						}, new java.util.Vector {
+							add( "选课编号" )
+							add( "课程编号" )
+							add( "课程名称" )
+							add( "学生编号" )
+							add( "学生姓名" )
+							add( "老师编号" )
+							add( "老师姓名" )
+							add( "课程成绩" )
+						}, new java.util.Vector {
+							add( class java.lang.Object )
+							add( class java.lang.Object )
+							add( class java.lang.Object )
+							add( class java.lang.Object )
+							add( class java.lang.Object )
+							add( class java.lang.Object )
+							add( null )
+							add( class java.lang.Object )
+						}, new java.util.Vector {
+							add( null )
+							add( null )
+							add( null )
+							add( null )
+							add( null )
+							add( null )
+							add( null )
+							add( null )
+						}, new java.util.Vector {
+							add( null )
+							add( null )
+							add( null )
+							add( null )
+							add( null )
+							add( null )
+							add( null )
+							add( null )
+						} )
+						"preferredSize": new java.awt.Dimension( 1300, 750 )
+						"rowHeight": 40
+						"font": new java.awt.Font( "楷体", 1, 22 )
+						"foreground": sfield java.awt.Color black
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "table2MouseClicked", true ) )
+					} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"x": 125
+					"y": 150
+					"width": 1435
+					"height": 530
+				} )
+				add( new FormComponent( "javax.swing.JComboBox" ) {
+					name: "comboBox2"
+					"model": new javax.swing.DefaultComboBoxModel {
+						selectedItem: "按课程编号查询"
+						addElement( "按课程编号查询" )
+						addElement( "按课程名称查询" )
+					}
+					"preferredSize": new java.awt.Dimension( 200, 50 )
+					"font": new java.awt.Font( "华文仿宋", 1, 24 )
+					"foreground": new java.awt.Color( 43, 45, 48, 255 )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"width": 250
+					"height": 50
+					"x": 350
+					"y": 50
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "textField2"
+					"preferredSize": new java.awt.Dimension( 150, 50 )
+					"font": new java.awt.Font( "华文仿宋", 1, 24 )
+					"foreground": new java.awt.Color( 43, 45, 48, 255 )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"width": 150
+					"height": 50
+					"x": 650
+					"y": 50
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label5"
+					"text": "查询条件"
+					"font": new java.awt.Font( "华文仿宋", 1, 24 )
+					"foreground": new java.awt.Color( 0, 0, 0, 255 )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"width": 100
+					"height": 50
+					"x": 200
+					"y": 50
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "button6"
+					"text": "查询"
+					"preferredSize": new java.awt.Dimension( 100, 50 )
+					"font": new java.awt.Font( "华文仿宋", 1, 24 )
+					"foreground": new java.awt.Color( 43, 45, 48, 255 )
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "PickQueryMouseClicked", true ) )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"width": 150
+					"height": 50
+					"x": 850
+					"y": 50
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "button5"
+					"text": "退课"
+					"preferredSize": new java.awt.Dimension( 100, 50 )
+					"font": new java.awt.Font( "华文仿宋", 1, 24 )
+					"foreground": new java.awt.Color( 43, 45, 48, 255 )
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "PickDeleteMouseClicked", true ) )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"width": 150
+					"height": 50
+					"x": 1050
+					"y": 50
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label1"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/pic/背景2.png" )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"height": 830
+				} )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 1685
+				"height": 830
+				"x": 0
+				"y": 0
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 1685, 830 )
+		} )
+	}
+}

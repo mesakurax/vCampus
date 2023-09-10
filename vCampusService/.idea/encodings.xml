@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$" charset="GBK" />
-    <file url="PROJECT" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/Source" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/entity" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/entityModel" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/module" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/net" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/sqlutil/DBConector_wyj.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/sqlutil/DBHelper.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/sqlutil/IconHelp.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/sqlutil/gpt_yun.java" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

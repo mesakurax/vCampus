@@ -17,10 +17,10 @@ public class BookModel implements Model{
     public boolean Insert(Object obj) {
         this.info = (Book) obj;
         try {
-            this.Query = "INSERT INTO tblBook(ISBN, Name, Author, Publisher, PublishDate, Count, Address, Image) " +
+            this.Query = "INSERT INTO tblBook(ISBN, Name, Author, Publisher, PublishDate, Count, Address, Image,Intro,Category) " +
                     "VALUES ('" + info.getISBN() + "','" + info.getName() + "','" + info.getAuthor() + "','" +
                     info.getPublisher() + "','" + info.getPublishdate() + "'," + info.getCount() + ",'" +
-                    info.getAddress() + "','" + info.getImage() + "')";
+                    info.getAddress() + "','" + info.getImage() + "','" +info.getIntro()+"','" +info.getCategory()+"')";
             System.out.println(this.Query);
             if (1 == DBHelper.executeNonQuery(this.Query)) {
                 return true;
@@ -35,7 +35,8 @@ public class BookModel implements Model{
         try {
             this.Query = "UPDATE tblBook SET Name = '" + info.getName() + "', Author = '" + info.getAuthor() + "', Publisher = '" +
                     info.getPublisher() + "', PublishDate = '" + info.getPublishdate() + "', Count = " + info.getCount() +
-                    ", Address = '" + info.getAddress() + "', Image = '" + info.getImage() + "' WHERE ISBN = '" + info.getISBN() + "'";
+                    ", Address = '" + info.getAddress() + "', Image = '" + info.getImage() + "', Intro = '" + info.getIntro() +"', Category = '" + info.getCategory() +
+                    "' WHERE ISBN = '" + info.getISBN() + "'";
             System.out.println(this.Query);
             if(1 ==  DBHelper.executeNonQuery(this.Query))
                 return true;
@@ -63,6 +64,7 @@ public class BookModel implements Model{
         if(2 == opt) this.Query = "select * from tblBook where Name = '" + info.getName() + "'";
         if(3 == opt) this.Query = "select * from tblBook where Author = '" + info.getAuthor() + "'";
         if(4 == opt) this.Query = "select * from tblBook where ISBN = '" + info.getISBN() + "'";
+        if(5 == opt) this.Query = "select * from tblBook where Category = '" + info.getCategory() + "'";
         try {
             System.out.println(this.Query);
             ResultSet rs =  DBHelper.executeQuery(this.Query);

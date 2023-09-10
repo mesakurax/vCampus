@@ -1,0 +1,156 @@
+JFDML JFormDesigner: "8.1.1.0.298" Java: "17.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+			name: "this"
+			"preferredSize": new java.awt.Dimension( 1685, 1030 )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label2"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/bankSystemView/pic/seulogo.png" )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 490
+				"height": 145
+				"x": 50
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+				name: "panel1"
+				"foreground": new java.awt.Color( 51, 255, 102, 255 )
+				"background": new java.awt.Color( 36, 50, 30, 255 )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+					name: "panel3"
+					"background": new java.awt.Color( 64, 80, 50, 255 )
+					add( new FormComponent( "javax.swing.JComboBox" ) {
+						name: "comboBox1"
+						"model": new javax.swing.DefaultComboBoxModel {
+							selectedItem: "请选择"
+							addElement( "请选择" )
+							addElement( "所有商品" )
+							addElement( "购物车" )
+							addElement( "消费记录" )
+						}
+						"font": new java.awt.Font( "楷体", 1, 26 )
+						"opaque": false
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseEntered", "comboBox1MouseEntered", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 535
+						"y": 0
+						"width": 170
+						"height": 50
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "textField1"
+						"font": new java.awt.Font( "楷体", 1, 26 )
+						"foreground": new java.awt.Color( 255, 255, 255, 255 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 715
+						"y": 0
+						"width": 265
+						"height": 50
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "button2"
+						"text": "搜索"
+						"font": new java.awt.Font( "楷体", 1, 26 )
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "button2MouseClicked", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 990
+						"y": 0
+						"height": 50
+						"width": 85
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "button3_record"
+						"text": "购买记录"
+						"font": new java.awt.Font( "楷体", 1, 26 )
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "button2_recordMouseClicked", true ) )
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "button3_recordMouseClicked", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 1485
+						"y": 0
+						"width": 150
+						"height": 50
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "button2_cart"
+						"text": "购物车"
+						"font": new java.awt.Font( "楷体", 1, 26 )
+						"icon": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "button2_cartMouseClicked", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 1315
+						"y": 0
+						"width": 150
+						"height": 50
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "button1_item"
+						"text": "商城"
+						"font": new java.awt.Font( "楷体", 1, 26 )
+						"icon": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "button1_itemMouseClicked", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 1140
+						"y": 0
+						"width": 150
+						"height": 50
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "textField2"
+						"opaque": false
+						"editable": false
+						"font": new java.awt.Font( "楷体", 1, 26 )
+						"foreground": new java.awt.Color( 255, 255, 255, 255 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 220
+						"y": 5
+						"height": 45
+						"width": 170
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label1"
+						"text": "账户余额："
+						"foreground": new java.awt.Color( 255, 255, 255, 255 )
+						"font": new java.awt.Font( "楷体", 1, 26 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 75
+						"y": 0
+						"height": 50
+						"width": 150
+					} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"y": 150
+					"height": 50
+					"width": 1685
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label3"
+					"text": "东南大学网上商城"
+					"font": new java.awt.Font( "楷体", 1, 60 )
+					"background": new java.awt.Color( 255, 255, 255, 255 )
+					"foreground": new java.awt.Color( 255, 255, 255, 255 )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"y": 15
+					"width": 600
+					"height": 135
+					"x": 1035
+				} )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 1685
+				"height": 200
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+				name: "panel2"
+				"visible": false
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"y": 200
+				"height": 830
+				"width": 1685
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 25, 30 )
+			"size": new java.awt.Dimension( 1685, 1030 )
+		} )
+	}
+}

@@ -7,6 +7,8 @@ package bankSystemView;
 import module.*;
 import entity.*;
 import utils.*;
+import beautyComponent.*;
+import utils.UIStyler;
 
 import javax.swing.table.*;
 import javax.swing.*;
@@ -24,76 +26,37 @@ import java.awt.event.MouseEvent;
  */
 public class userBankView extends JPanel {
 
-    private String uId;
+    private User uu;
     private SocketHelper socketHelper;
     private bankSystem model;
 
     public void beautify(){
         try {
             BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.generalNoTranslucencyShadow;
-            org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
+            BeautyEyeLNFHelper.launchBeautyEyeLNF();
             UIManager.put("RootPane.setupButtonVisible",false);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public userBankView(SocketHelper socketHelper, String uid) {
+    public userBankView(SocketHelper socketHelper, User uu) {
         beautify();
         initComponents();
-        this.uId=uid;
+        this.uu=uu;
         this.socketHelper=socketHelper;
         model=new bankSystem(this.socketHelper);
 
+        UIStyler.createHeader(this);
+        UIStyler.setTopButton(button2);
+        UIStyler.setTopButton(button1);
+        UIStyler.setTransparentTable(scrollPane1);
 
-        button1.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.lightBlue));
-      /*  DefaultTableCellHeaderRenderer hr = new DefaultTableCellHeaderRenderer();
-        hr.setHorizontalAlignment(JLabel.CENTER);
-        table1.getTableHeader().setDefaultRenderer(hr);
-        DefaultTableCellRenderer r = new DefaultTableCellRenderer();
-        r.setHorizontalAlignment(JLabel.CENTER);
-        table1.setFont(new Font("宋体", Font.BOLD, 20));
-        table1.setDefaultRenderer(Object.class, r);
         table1.setRowHeight(60);
+/*       ;
+
         JTableHeader head = table1.getTableHeader(); // 创建表格标题对象
-        head.setPreferredSize(new Dimension(head.getWidth(), 40));// 设置表头大小
-        head.setFont(new Font("华文仿宋", Font.BOLD, 30));// 设置表格字体*/
-
-            //设置表头格式
-        table1.getTableHeader().setPreferredSize(new Dimension(1, 30));
-        table1.getTableHeader().setFont(new Font("华文仿宋",Font.BOLD,25));
-        //设置表格字体和位置
-        DefaultTableCellRenderer dc=new DefaultTableCellRenderer();//创建一个默认的表单元格渲染器
-        dc.setHorizontalAlignment(SwingConstants.CENTER);
-        table1.setDefaultRenderer(Object.class,dc);
-        table1.setFont(new Font("华文仿宋",Font.BOLD,20));
-        table1.setRowHeight(60);
-
-        DefaultTableCellHeaderRenderer hr = new DefaultTableCellHeaderRenderer();
-        hr.setHorizontalAlignment(JLabel.CENTER);
-        table1.getTableHeader().setDefaultRenderer(hr);
-        try
-        {
-            DefaultTableCellRenderer tcr = new DefaultTableCellRenderer(){
-                private static final long serialVersionUID = 1L;
-                public Component getTableCellRendererComponent(JTable table,Object value, boolean isSelected, boolean hasFocus,int row, int column){
-                    if(row%2 == 0)
-                        setBackground(Color.WHITE);//设置奇数行底色
-                    else if(row%2 == 1)
-                        setBackground(new Color(124,179,158));//设置偶数行底色
-                    return super.getTableCellRendererComponent(table, value,isSelected, hasFocus, row, column);
-                }
-            };
-            for(int i = 0; i < table1.getColumnCount(); i++) {
-                table1.getColumn(table1.getColumnName(i)).setCellRenderer(tcr);
-            }
-            tcr.setHorizontalAlignment(JLabel.CENTER);
-            table1.setDefaultRenderer(Object.class,tcr);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-
+      // 设置表头大小*/
 
         refreshTable();
     }
@@ -104,9 +67,9 @@ public class userBankView extends JPanel {
         try {
             double value = Double.parseDouble(text);
             rechargeRecord temp=new rechargeRecord();
-            temp.setuId(uId);
+            temp.setuId(uu.getId());
             temp.setAmount(value);
-            temp.setuName("ll");
+            temp.setuName(uu.getName());
             temp.setIsDispose(0);
             temp.setTime(Timehelp.getCurrentTime());
             if(model.user_addRecord(temp))
@@ -128,7 +91,7 @@ public class userBankView extends JPanel {
 
     public void refreshTable() {
         rechargeRecord temp=new rechargeRecord();
-        temp.setuId(this.uId);
+        temp.setuId(uu.getId());
         rechargeRecord[] sss = model.user_queryRecord(temp);
 
         DefaultTableModel tableModel = (DefaultTableModel) table1.getModel();
@@ -148,41 +111,51 @@ public class userBankView extends JPanel {
             };
             tableModel.addRow(rowData);
         }
+        textField2.setText(String.valueOf(model.query_balance(uu)));
     }
 
     private void refreshMouseClicked() {
         // TODO add your code here
         refreshTable();
+
     }
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
+        textField1 = new JTextField();
         pamel2 = new JPanel();
         scrollPane1 = new JScrollPane();
         table1 = new JTable();
-        textField1 = new JTextField();
-        button2 = new JButton();
-        button1 = new JButton();
-        label3 = new JLabel();
-        label4 = new JLabel();
         panel1 = new JPanel();
         label1 = new JLabel();
         label2 = new JLabel();
-        label5 = new JLabel();
-        label6 = new JLabel();
+        label3 = new JLabel();
+        button1 = new JButton();
+        button2 = new JButton();
+        label7 = new JLabel();
+        textField2 = new JTextField();
 
         //======== this ========
         setPreferredSize(new Dimension(1685, 1030));
         setLayout(null);
 
+        //---- textField1 ----
+        textField1.setBackground(Color.lightGray);
+        textField1.setFont(new Font("\u6977\u4f53", Font.BOLD, 26));
+        textField1.setForeground(Color.black);
+        add(textField1);
+        textField1.setBounds(590, 150, 335, 50);
+
         //======== pamel2 ========
         {
             pamel2.setBackground(new Color(0x15888f));
             pamel2.setPreferredSize(new Dimension(100, 100));
+            pamel2.setOpaque(false);
             pamel2.setLayout(null);
 
             //======== scrollPane1 ========
             {
+                scrollPane1.setForeground(Color.black);
 
                 //---- table1 ----
                 table1.setModel(new DefaultTableModel(
@@ -255,52 +228,11 @@ public class userBankView extends JPanel {
                     cm.getColumn(0).setMinWidth(15);
                     cm.getColumn(6).setPreferredWidth(160);
                 }
+                table1.setForeground(Color.white);
                 scrollPane1.setViewportView(table1);
             }
             pamel2.add(scrollPane1);
-            scrollPane1.setBounds(240, 115, 1240, 665);
-
-            //---- textField1 ----
-            textField1.setBackground(new Color(0xccffff));
-            textField1.setFont(new Font("\u5e7c\u5706", Font.BOLD, 28));
-            textField1.setHorizontalAlignment(SwingConstants.CENTER);
-            pamel2.add(textField1);
-            textField1.setBounds(240, 35, 295, 55);
-
-            //---- button2 ----
-            button2.setText("\u5237\u65b0");
-            button2.setFont(new Font("\u5fae\u8edf\u6b63\u9ed1\u9ad4", Font.BOLD, 28));
-            button2.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    refreshMouseClicked();
-                }
-            });
-            pamel2.add(button2);
-            button2.setBounds(680, 25, 110, 75);
-
-            //---- button1 ----
-            button1.setText("\u5145\u503c");
-            button1.setFont(new Font("\u5fae\u8edf\u6b63\u9ed1\u9ad4", Font.BOLD, 28));
-            button1.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    button1MouseClicked(e);
-                }
-            });
-            pamel2.add(button1);
-            button1.setBounds(555, 25, 110, 75);
-
-            //---- label3 ----
-            label3.setText("text");
-            label3.setIcon(new ImageIcon(getClass().getResource("/bankSystemView/pic/\u6682\u65e0\u94f6\u884c\u5361 (2).png")));
-            pamel2.add(label3);
-            label3.setBounds(1020, -125, 670, 925);
-
-            //---- label4 ----
-            label4.setIcon(new ImageIcon(getClass().getResource("/bankSystemView/pic/\u6682\u65e0\u94f6\u884c\u5361 (3).png")));
-            pamel2.add(label4);
-            label4.setBounds(-110, -65, 985, 870);
+            scrollPane1.setBounds(15, 35, 1635, 730);
 
             {
                 // compute preferred size
@@ -318,39 +250,26 @@ public class userBankView extends JPanel {
             }
         }
         add(pamel2);
-        pamel2.setBounds(0, 190, 1685, 840);
+        pamel2.setBounds(15, 225, 1670, 860);
 
         //======== panel1 ========
         {
-            panel1.setBackground(new Color(0xccf0e6));
+            panel1.setBackground(new Color(0x24321e));
             panel1.setLayout(null);
 
             //---- label1 ----
             label1.setText("\u4e1c\u5357\u5927\u5b66\u7f51\u4e0a\u94f6\u884c");
             label1.setFont(new Font("\u6977\u4f53", Font.BOLD, 60));
             label1.setHorizontalAlignment(SwingConstants.CENTER);
-            label1.setIcon(new ImageIcon(getClass().getResource("/bankSystemView/pic/\u94f6\u884c (2).png")));
+            label1.setIcon(null);
             label1.setForeground(Color.white);
             panel1.add(label1);
-            label1.setBounds(475, 40, 730, 125);
+            label1.setBounds(1035, 15, 600, 135);
 
             //---- label2 ----
             label2.setIcon(new ImageIcon(getClass().getResource("/bankSystemView/pic/seulogo.png")));
             panel1.add(label2);
-            label2.setBounds(1310, 5, 355, 190);
-
-            //---- label5 ----
-            label5.setText("text");
-            label5.setIcon(new ImageIcon(getClass().getResource("/bankSystemView/pic/img.png")));
-            label5.setForeground(new Color(0x15888f));
-            panel1.add(label5);
-            label5.setBounds(0, 0, 855, 250);
-
-            //---- label6 ----
-            label6.setText("text");
-            label6.setIcon(new ImageIcon(getClass().getResource("/bankSystemView/pic/img.png")));
-            panel1.add(label6);
-            label6.setBounds(660, 0, 1175, 235);
+            label2.setBounds(50, 0, 490, 145);
 
             {
                 // compute preferred size
@@ -368,7 +287,52 @@ public class userBankView extends JPanel {
             }
         }
         add(panel1);
-        panel1.setBounds(0, 0, 1685, 230);
+        panel1.setBounds(0, 0, 1685, 150);
+
+        //---- label3 ----
+        label3.setIcon(new ImageIcon(getClass().getResource("/bankSystemView/pic/imageonline-co-brightnessadjusted (4).png")));
+        add(label3);
+        label3.setBounds(0, 200, 1685, 830);
+
+        //---- button1 ----
+        button1.setText("\u5145\u503c");
+        button1.setFont(new Font("\u5fae\u8edf\u6b63\u9ed1\u9ad4", Font.BOLD, 28));
+        button1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                button1MouseClicked(e);
+            }
+        });
+        add(button1);
+        button1.setBounds(940, 150, 150, 50);
+
+        //---- button2 ----
+        button2.setText("\u5237\u65b0");
+        button2.setFont(new Font("\u5fae\u8edf\u6b63\u9ed1\u9ad4", Font.BOLD, 28));
+        button2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                refreshMouseClicked();
+            }
+        });
+        add(button2);
+        button2.setBounds(1110, 150, 150, 50);
+
+        //---- label7 ----
+        label7.setText("\u5f53\u524d\u4f59\u989d:");
+        label7.setFont(new Font("\u6977\u4f53", Font.BOLD, 26));
+        label7.setForeground(Color.black);
+        add(label7);
+        label7.setBounds(195, 150, 125, 50);
+
+        //---- textField2 ----
+        textField2.setFont(new Font("\u6977\u4f53", Font.BOLD, 26));
+        textField2.setEditable(false);
+        textField2.setForeground(Color.white);
+        textField2.setOpaque(false);
+        textField2.setHorizontalAlignment(SwingConstants.CENTER);
+        add(textField2);
+        textField2.setBounds(330, 150, 170, 50);
 
         {
             // compute preferred size
@@ -388,19 +352,18 @@ public class userBankView extends JPanel {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
+    private JTextField textField1;
     private JPanel pamel2;
     private JScrollPane scrollPane1;
     private JTable table1;
-    private JTextField textField1;
-    private JButton button2;
-    private JButton button1;
-    private JLabel label3;
-    private JLabel label4;
     private JPanel panel1;
     private JLabel label1;
     private JLabel label2;
-    private JLabel label5;
-    private JLabel label6;
+    private JLabel label3;
+    private JButton button1;
+    private JButton button2;
+    private JLabel label7;
+    private JTextField textField2;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 
 
@@ -414,7 +377,10 @@ public class userBankView extends JPanel {
                     socketHelper.getConnection(socketHelper.ip,socketHelper.port);
                     socketHelper.getOs().writeInt(1);
                     socketHelper.getOs().flush();
-                    userBankView stuAdmin = new userBankView(socketHelper,"555");
+                    User uu=new User();
+                    uu.setId("0800");
+                    userBankView stuAdmin = new userBankView(socketHelper,uu);
+
 
                     frame.setLayout(new BorderLayout()); // 设置布局管理器为BorderLayout
 

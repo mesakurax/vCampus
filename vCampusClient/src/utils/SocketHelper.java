@@ -24,6 +24,10 @@ public class SocketHelper {
 			e.printStackTrace();
 		}
 	}
+	public void setip(String ip)
+	{
+		this.ip=ip;
+	}
 
 	public void getConnection(String ip, int port) {
 		try {

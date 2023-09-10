@@ -12,6 +12,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.*;
 
 
+import beautyComponent.TransparentTable;
 import module.*;
 import entity.*;
 import utils.*;
@@ -29,7 +30,7 @@ public class admin_2 extends JPanel {
     public void beautify(){
         try {
             BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.generalNoTranslucencyShadow;
-            org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
+            BeautyEyeLNFHelper.launchBeautyEyeLNF();
             UIManager.put("RootPane.setupButtonVisible",false);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -41,17 +42,12 @@ public class admin_2 extends JPanel {
         this.socketHelper=socketHelper;
         model=new bankSystem(this.socketHelper);
 
-        DefaultTableCellHeaderRenderer hr = new DefaultTableCellHeaderRenderer();
-        hr.setHorizontalAlignment(JLabel.CENTER);
-        table1.getTableHeader().setDefaultRenderer(hr);
-        DefaultTableCellRenderer r = new DefaultTableCellRenderer();
-        r.setHorizontalAlignment(JLabel.CENTER);
-        table1.setFont(new Font("宋体", Font.BOLD, 20));
-        table1.setDefaultRenderer(Object.class, r);
+        UIStyler.setTransparentTable(scrollPane1);
+
+        table1.setFont(new Font("华文仿宋", Font.BOLD, 28));
         table1.setRowHeight(60);
         JTableHeader head = table1.getTableHeader(); // 创建表格标题对象
         head.setPreferredSize(new Dimension(head.getWidth(), 40));// 设置表头大小
-        head.setFont(new Font("华文仿宋", Font.BOLD, 30));
         refreshTable();
     }
     public void refreshTable() {
@@ -85,9 +81,9 @@ public class admin_2 extends JPanel {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         panel1 = new JPanel();
-        textField1 = new JTextField();
         scrollPane1 = new JScrollPane();
         table1 = new JTable();
+        textField1 = new JTextField();
         label3 = new JLabel();
 
         //======== this ========
@@ -97,9 +93,8 @@ public class admin_2 extends JPanel {
         {
             panel1.setForeground(Color.white);
             panel1.setBackground(new Color(0x2b4e50));
+            panel1.setOpaque(false);
             panel1.setLayout(null);
-            panel1.add(textField1);
-            textField1.setBounds(570, 30, 485, 50);
 
             //======== scrollPane1 ========
             {
@@ -178,13 +173,20 @@ public class admin_2 extends JPanel {
                 scrollPane1.setViewportView(table1);
             }
             panel1.add(scrollPane1);
-            scrollPane1.setBounds(250, 135, 1145, 610);
+            scrollPane1.setBounds(45, 95, 1600, 695);
+
+            //---- textField1 ----
+            textField1.setFont(new Font("\u6977\u4f53", Font.BOLD, 24));
+            textField1.setForeground(Color.black);
+            textField1.setBackground(Color.lightGray);
+            panel1.add(textField1);
+            textField1.setBounds(45, 15, 345, 65);
 
             //---- label3 ----
             label3.setText("text");
-            label3.setIcon(new ImageIcon(getClass().getResource("/bankSystemView/pic/\u6682\u65e0\u94f6\u884c\u5361 (4).png")));
+            label3.setIcon(new ImageIcon(getClass().getResource("/bankSystemView/pic/imageonline-co-brightnessadjusted (4).png")));
             panel1.add(label3);
-            label3.setBounds(1120, 5, 935, 890);
+            label3.setBounds(0, 0, 2050, 830);
 
             {
                 // compute preferred size
@@ -202,7 +204,7 @@ public class admin_2 extends JPanel {
             }
         }
         add(panel1);
-        panel1.setBounds(0, 0, 1685, 815);
+        panel1.setBounds(0, 0, 1685, 830);
 
         {
             // compute preferred size
@@ -281,9 +283,9 @@ public class admin_2 extends JPanel {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
     private JPanel panel1;
-    private JTextField textField1;
     private JScrollPane scrollPane1;
     private JTable table1;
+    private JTextField textField1;
     private JLabel label3;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 

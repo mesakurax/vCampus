@@ -1,6 +1,7 @@
 package entity;
 
 import java.io.Serializable;
+
 public class rechargeRecord implements Serializable{
     private int rId;
     private String uId;

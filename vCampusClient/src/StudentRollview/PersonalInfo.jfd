@@ -1,0 +1,46 @@
+JFDML JFormDesigner: "8.1.1.0.298" Java: "17.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {par l {comp label2::l:p::p, comp label1::l:p::p}, space :0:0:x}, seq t {par t {seq {space ::215:x, comp saying:::p:338:p}, seq {space :p:18:p, comp name:::p:92:p, space :p:66:p, par l {comp Department::::377:x, comp Id::::377:x}}}, space :p:27:p}}"
+			"$verticalGroup": "par l {seq l {comp label1:::p::p, space :::p, par l {comp name:::p:66:p, comp Id:::p:77:p}, space u:::x, comp Department:::p:71:p, space u:::p, comp saying:::p:90:p, space :::p, comp label2:::p::p}}"
+		} ) {
+			name: "this"
+			"background": new java.awt.Color( 255, 255, 255, 255 )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label1"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/StudentRollview/studentRollPic/purpleline.png" )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label2"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/StudentRollview/studentRollPic/redline.png" )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "name"
+				"foreground": sfield java.awt.Color black
+				"font": new java.awt.Font( "华文楷体", 0, 28 )
+				"text": "text"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "saying"
+				"font": new java.awt.Font( "华文行楷", 0, 25 )
+				"foreground": sfield java.awt.Color black
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "Id"
+				"text": "text"
+				"font": new java.awt.Font( "华文楷体", 0, 26 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "Department"
+				"text": "text"
+				"font": new java.awt.Font( "华文楷体", 0, 26 )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 180, 106 )
+			"size": new java.awt.Dimension( 580, 240 )
+		} )
+	}
+}

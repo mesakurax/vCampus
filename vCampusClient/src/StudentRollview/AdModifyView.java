@@ -1,9 +1,12 @@
 package StudentRollview;
 
+import utils.UIStyler;
 import entity.StudentRoll;
 import module.StudentData;
+import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
 import utils.SocketHelper;
 
+import javax.smartcardio.Card;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -12,7 +15,7 @@ import java.awt.event.MouseEvent;
 /**
  * @author Brainrain
  */
-public class AdModifyView extends JFrame {
+public class AdModifyView extends JPanel {
     private SocketHelper socketHelper;
     StuAdmin p;
 
@@ -21,7 +24,9 @@ public class AdModifyView extends JFrame {
 
     public AdModifyView(StudentRoll stu, SocketHelper ss, StuAdmin pp) {
         initComponents();
-
+        button1.setLocation(1220,0);
+        UIStyler.setBelowButton(button1);
+        setOpaque(false);
         this.stu = stu;
         if (stu.getStuName() == "") optType = "add";  //根据传递的学生信息是否为空来判断操作类型
         else optType = "modify";
@@ -66,23 +71,24 @@ public class AdModifyView extends JFrame {
             }
             if (success) {
                 JOptionPane.showMessageDialog(null, "保存成功！");
-                this.dispose();
+//                Window window = SwingUtilities.windowForComponent(this);
+//                if (window instanceof JFrame) {
+//                    JFrame frameToClose = (JFrame) window;
+//                    frameToClose.dispose();
+//                }
                 p.refreshTable();
 
             } else {
                 JOptionPane.showMessageDialog(null, "保存失败！");
             }
-
         } else {
             JOptionPane.showMessageDialog(null, "缺少信息，无法保存！");
         }
+        p.card.show(p.getCardPanel(),"p1");
     }
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        panel1 = new JPanel();
-        label9 = new JLabel();
-        panel2 = new JPanel();
         button1 = new JButton();
         label1 = new JLabel();
         label2 = new JLabel();
@@ -100,177 +106,127 @@ public class AdModifyView extends JFrame {
         textField7 = new JTextField();
 
         //======== this ========
-        setIconImage(new ImageIcon(getClass().getResource("/pic/name.png")).getImage());
-        setBackground(Color.white);
-        Container contentPane = getContentPane();
-        contentPane.setLayout(null);
+        setBackground(Color.black);
+        setMinimumSize(new Dimension(1685, 648));
+        setLayout(null);
 
-        //======== panel1 ========
-        {
-            panel1.setBackground(new Color(0x9a9c99));
-            panel1.setLayout(null);
-
-            //---- label9 ----
-            label9.setText("\u5b66\u7c4d\u4fe1\u606f\u53d8\u52a8");
-            label9.setFont(new Font("\u6977\u4f53", Font.BOLD, 50));
-            label9.setIcon(new ImageIcon(getClass().getResource("/pic/system.png")));
-            panel1.add(label9);
-            label9.setBounds(90, 35, 440, 95);
-
-            {
-                // compute preferred size
-                Dimension preferredSize = new Dimension();
-                for(int i = 0; i < panel1.getComponentCount(); i++) {
-                    Rectangle bounds = panel1.getComponent(i).getBounds();
-                    preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
-                    preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
-                }
-                Insets insets = panel1.getInsets();
-                preferredSize.width += insets.right;
-                preferredSize.height += insets.bottom;
-                panel1.setMinimumSize(preferredSize);
-                panel1.setPreferredSize(preferredSize);
+        //---- button1 ----
+        button1.setFont(new Font("\u6977\u4f53", button1.getFont().getStyle(), button1.getFont().getSize() + 10));
+        button1.setForeground(Color.black);
+        button1.setIcon(null);
+        button1.setText("\u4fdd\u5b58");
+        button1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                button1MouseClicked(e);
             }
-        }
-        contentPane.add(panel1);
-        panel1.setBounds(-15, 0, 640, 175);
+        });
+        add(button1);
+        button1.setBounds(1220, 10, 65, 65);
 
-        //======== panel2 ========
-        {
-            panel2.setBackground(Color.white);
-            panel2.setLayout(null);
+        //---- label1 ----
+        label1.setText("\u59d3\u540d");
+        label1.setFont(new Font("\u6977\u4f53", Font.PLAIN, 36));
+        label1.setIcon(null);
+        label1.setForeground(Color.white);
+        add(label1);
+        label1.setBounds(90, 155, 90, 75);
 
-            //---- button1 ----
-            button1.setText("\u4fdd\u5b58");
-            button1.setFont(new Font("\u6977\u4f53", button1.getFont().getStyle(), button1.getFont().getSize() + 10));
-            button1.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    button1MouseClicked(e);
-                }
-            });
-            panel2.add(button1);
-            button1.setBounds(new Rectangle(new Point(270, 545), button1.getPreferredSize()));
+        //---- label2 ----
+        label2.setText("\u6027\u522b");
+        label2.setFont(new Font("\u6977\u4f53", Font.PLAIN, 36));
+        label2.setForeground(Color.white);
+        add(label2);
+        label2.setBounds(new Rectangle(new Point(90, 410), label2.getPreferredSize()));
 
-            //---- label1 ----
-            label1.setText("\u59d3\u540d");
-            label1.setFont(new Font("\u6977\u4f53", label1.getFont().getStyle() & ~Font.BOLD, label1.getFont().getSize() + 10));
-            label1.setIcon(null);
-            panel2.add(label1);
-            label1.setBounds(110, 15, 70, 45);
+        //---- label3 ----
+        label3.setText("\u5b66\u53f7");
+        label3.setFont(new Font("\u6977\u4f53", Font.PLAIN, 36));
+        label3.setForeground(Color.white);
+        add(label3);
+        label3.setBounds(new Rectangle(new Point(90, 285), label3.getPreferredSize()));
 
-            //---- label2 ----
-            label2.setText("\u6027\u522b");
-            label2.setFont(new Font("\u6977\u4f53", label2.getFont().getStyle(), label2.getFont().getSize() + 10));
-            panel2.add(label2);
-            label2.setBounds(new Rectangle(new Point(110, 100), label2.getPreferredSize()));
+        //---- label4 ----
+        label4.setText("\u5e74\u7ea7");
+        label4.setFont(new Font("\u6977\u4f53", Font.PLAIN, 36));
+        label4.setForeground(Color.white);
+        add(label4);
+        label4.setBounds(new Rectangle(new Point(645, 170), label4.getPreferredSize()));
 
-            //---- label3 ----
-            label3.setText("\u5b66\u53f7");
-            label3.setFont(new Font("\u6977\u4f53", label3.getFont().getStyle(), label3.getFont().getSize() + 10));
-            panel2.add(label3);
-            label3.setBounds(new Rectangle(new Point(110, 175), label3.getPreferredSize()));
+        //---- label5 ----
+        label5.setText("\u7c4d\u8d2f");
+        label5.setFont(new Font("\u6977\u4f53", Font.PLAIN, 36));
+        label5.setForeground(Color.white);
+        add(label5);
+        label5.setBounds(645, 285, 80, 50);
 
-            //---- label4 ----
-            label4.setText("\u5e74\u7ea7");
-            label4.setFont(new Font("\u6977\u4f53", label4.getFont().getStyle(), label4.getFont().getSize() + 10));
-            panel2.add(label4);
-            label4.setBounds(new Rectangle(new Point(110, 250), label4.getPreferredSize()));
+        //---- label6 ----
+        label6.setText("\u5b66\u9662");
+        label6.setFont(new Font("\u6977\u4f53", Font.PLAIN, 36));
+        label6.setForeground(Color.white);
+        add(label6);
+        label6.setBounds(90, 55, 95, 70);
 
-            //---- label5 ----
-            label5.setText("\u7c4d\u8d2f");
-            label5.setFont(new Font("\u6977\u4f53", label5.getFont().getStyle(), label5.getFont().getSize() + 10));
-            panel2.add(label5);
-            label5.setBounds(new Rectangle(new Point(110, 325), label5.getPreferredSize()));
+        //---- label7 ----
+        label7.setText("\u4e13\u4e1a");
+        label7.setFont(new Font("\u6977\u4f53", Font.PLAIN, 36));
+        label7.setForeground(Color.white);
+        add(label7);
+        label7.setBounds(645, 55, 75, 65);
 
-            //---- label6 ----
-            label6.setText("\u5b66\u9662");
-            label6.setFont(new Font("\u6977\u4f53", label6.getFont().getStyle(), label6.getFont().getSize() + 10));
-            panel2.add(label6);
-            label6.setBounds(new Rectangle(new Point(110, 400), label6.getPreferredSize()));
+        //---- textField1 ----
+        textField1.setFont(new Font("\u6977\u4f53", Font.PLAIN, 30));
+        add(textField1);
+        textField1.setBounds(195, 165, 320, 55);
 
-            //---- label7 ----
-            label7.setText("\u4e13\u4e1a");
-            label7.setFont(new Font("\u6977\u4f53", label7.getFont().getStyle(), label7.getFont().getSize() + 10));
-            panel2.add(label7);
-            label7.setBounds(new Rectangle(new Point(110, 475), label7.getPreferredSize()));
+        //---- textField2 ----
+        textField2.setFont(new Font("\u6977\u4f53", Font.PLAIN, 30));
+        add(textField2);
+        textField2.setBounds(195, 400, 320, 55);
 
-            //---- textField1 ----
-            textField1.setFont(new Font("\u6977\u4f53", textField1.getFont().getStyle(), textField1.getFont().getSize() + 10));
-            panel2.add(textField1);
-            textField1.setBounds(175, 20, 275, 35);
+        //---- textField3 ----
+        textField3.setFont(new Font("\u6977\u4f53", Font.PLAIN, 30));
+        add(textField3);
+        textField3.setBounds(195, 275, 320, 55);
 
-            //---- textField2 ----
-            textField2.setFont(new Font("\u6977\u4f53", textField2.getFont().getStyle(), textField2.getFont().getSize() + 10));
-            panel2.add(textField2);
-            textField2.setBounds(175, 95, 275, 35);
+        //---- textField4 ----
+        textField4.setFont(new Font("\u6977\u4f53", Font.PLAIN, 30));
+        add(textField4);
+        textField4.setBounds(745, 165, 320, 55);
 
-            //---- textField3 ----
-            textField3.setFont(new Font("\u6977\u4f53", textField3.getFont().getStyle(), textField3.getFont().getSize() + 10));
-            panel2.add(textField3);
-            textField3.setBounds(175, 170, 275, 35);
+        //---- textField5 ----
+        textField5.setFont(new Font("\u6977\u4f53", Font.PLAIN, 30));
+        add(textField5);
+        textField5.setBounds(745, 280, 320, 55);
 
-            //---- textField4 ----
-            textField4.setFont(new Font("\u6977\u4f53", textField4.getFont().getStyle(), textField4.getFont().getSize() + 10));
-            panel2.add(textField4);
-            textField4.setBounds(175, 245, 275, 35);
+        //---- textField6 ----
+        textField6.setFont(new Font("\u6977\u4f53", Font.PLAIN, 30));
+        add(textField6);
+        textField6.setBounds(195, 60, 320, 55);
 
-            //---- textField5 ----
-            textField5.setFont(new Font("\u6977\u4f53", textField5.getFont().getStyle(), textField5.getFont().getSize() + 10));
-            panel2.add(textField5);
-            textField5.setBounds(175, 320, 275, 35);
-
-            //---- textField6 ----
-            textField6.setFont(new Font("\u6977\u4f53", textField6.getFont().getStyle(), textField6.getFont().getSize() + 10));
-            panel2.add(textField6);
-            textField6.setBounds(175, 395, 275, 35);
-
-            //---- textField7 ----
-            textField7.setFont(new Font("\u6977\u4f53", textField7.getFont().getStyle(), textField7.getFont().getSize() + 10));
-            panel2.add(textField7);
-            textField7.setBounds(175, 470, 275, 35);
-
-            {
-                // compute preferred size
-                Dimension preferredSize = new Dimension();
-                for(int i = 0; i < panel2.getComponentCount(); i++) {
-                    Rectangle bounds = panel2.getComponent(i).getBounds();
-                    preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
-                    preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
-                }
-                Insets insets = panel2.getInsets();
-                preferredSize.width += insets.right;
-                preferredSize.height += insets.bottom;
-                panel2.setMinimumSize(preferredSize);
-                panel2.setPreferredSize(preferredSize);
-            }
-        }
-        contentPane.add(panel2);
-        panel2.setBounds(0, 175, 605, 605);
+        //---- textField7 ----
+        textField7.setFont(new Font("\u6977\u4f53", Font.PLAIN, 30));
+        add(textField7);
+        textField7.setBounds(745, 60, 320, 55);
 
         {
             // compute preferred size
             Dimension preferredSize = new Dimension();
-            for(int i = 0; i < contentPane.getComponentCount(); i++) {
-                Rectangle bounds = contentPane.getComponent(i).getBounds();
+            for(int i = 0; i < getComponentCount(); i++) {
+                Rectangle bounds = getComponent(i).getBounds();
                 preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
                 preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
             }
-            Insets insets = contentPane.getInsets();
+            Insets insets = getInsets();
             preferredSize.width += insets.right;
             preferredSize.height += insets.bottom;
-            contentPane.setMinimumSize(preferredSize);
-            contentPane.setPreferredSize(preferredSize);
+            setMinimumSize(preferredSize);
+            setPreferredSize(preferredSize);
         }
-        setSize(610, 810);
-        setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    private JPanel panel1;
-    private JLabel label9;
-    private JPanel panel2;
     private JButton button1;
     private JLabel label1;
     private JLabel label2;
