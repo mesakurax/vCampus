@@ -14,28 +14,31 @@ public class test {
 
     public static void main(String[] args) {
 
-        client a=new client();
-        a.run();
-        client b=new client();
-        b.run();
-        client c=new client();
-        c.run();
+        User a1=new User();
+        a1.setName("小明");
+        a1.setId("090212");
+        User b1=new User();
+        b1.setName("小红");
+        b1.setId("090211");
+        client_pp a=new client_pp();
+        a.run(a1);
+        client_pp b=new client_pp();
+        b.run(b1);
+       // client c=new client();
+       // c.run();
     }
 }
 
 
 
 
+class client_pp {
 
-class client {
-
-    public void run() {
+    public void run(User info) {
         try {
-            User t = new User();
             JFrame frame = new JFrame();
 
-            t.setName(Timehelp.getCurrentTime());
-            chatView stuAdmin = new chatView(t);
+            chatView stuAdmin = new chatView(info);
 
             frame.setLayout(new BorderLayout()); // 设置布局管理器为BorderLayout
 

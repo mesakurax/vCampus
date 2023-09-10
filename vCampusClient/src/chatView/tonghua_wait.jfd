@@ -1,0 +1,26 @@
+JFDML JFormDesigner: "8.1.1.0.298" Java: "17.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class javax.swing.BoxLayout ) {
+			"axis": 0
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq t {space ::67:x, comp label1:::p:166:p, space :p:20:p}}"
+				"$verticalGroup": "par l {seq l {space :::p, comp label1:::p:89:p, space ::14:x}}"
+			} ) {
+				name: "panel1"
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label1"
+					"text": "等待接听中........"
+					"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 5, false )
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 350, 235 )
+			"size": new java.awt.Dimension( 255, 140 )
+		} )
+	}
+}

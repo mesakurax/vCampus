@@ -161,6 +161,7 @@ public class userBankView extends JPanel {
         scrollPane1 = new JScrollPane();
         table1 = new JTable();
         textField1 = new JTextField();
+        button2 = new JButton();
         button1 = new JButton();
         label3 = new JLabel();
         label4 = new JLabel();
@@ -265,6 +266,18 @@ public class userBankView extends JPanel {
             textField1.setHorizontalAlignment(SwingConstants.CENTER);
             pamel2.add(textField1);
             textField1.setBounds(240, 35, 295, 55);
+
+            //---- button2 ----
+            button2.setText("\u5237\u65b0");
+            button2.setFont(new Font("\u5fae\u8edf\u6b63\u9ed1\u9ad4", Font.BOLD, 28));
+            button2.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    refreshMouseClicked();
+                }
+            });
+            pamel2.add(button2);
+            button2.setBounds(680, 25, 110, 75);
 
             //---- button1 ----
             button1.setText("\u5145\u503c");
@@ -379,6 +392,7 @@ public class userBankView extends JPanel {
     private JScrollPane scrollPane1;
     private JTable table1;
     private JTextField textField1;
+    private JButton button2;
     private JButton button1;
     private JLabel label3;
     private JLabel label4;
