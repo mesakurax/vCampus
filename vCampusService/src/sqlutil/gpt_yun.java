@@ -16,8 +16,8 @@ import java.net.URL;
 public class gpt_yun {
 
     private static String getAccessToken() throws IOException {
-        String apiKey = "lNiXykCWosvV8mWOt1VGAFFQ";
-        String secretKey = "28VenBQWggxqSGhHlYSn4dCOCx8NpILm";
+        String apiKey = "";
+        String secretKey = "";  //填自己的
         String url = "https://aip.baidubce.com/oauth/2.0/token?" +
                 "grant_type=client_credentials&" +
                 "client_id=" + apiKey + "&" +
