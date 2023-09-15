@@ -5,8 +5,8 @@ import java.sql.*;
 public class DBHelper {
     public static String Driver = "com.mysql.cj.jdbc.Driver";
     public static String dbUrl = "jdbc:mysql://localhost:3306/test?useSSL=false&serverTimezone=UTC";
-    public static String username = "root";
-    public static String password = "655375";
+    public static String username = "";
+    public static String password = "";
     public static Connection conn = null;
 
     public static Connection getConnection() {
